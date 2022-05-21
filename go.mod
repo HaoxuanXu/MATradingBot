@@ -8,6 +8,6 @@ require (
 )
 
 require (
-	cloud.google.com/go v0.99.0 // indirect
-	github.com/shopspring/decimal v1.3.1 // indirect
+	cloud.google.com/go v0.101.1 // indirect
+	github.com/shopspring/decimal v1.3.1
 )

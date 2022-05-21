@@ -9,8 +9,6 @@ type TotalBarData struct {
 }
 
 type MAConditions struct {
-	HasLongPosition    bool
-	HasShortPosition   bool
 	IsMA20DaysDropping bool
 	IsMA30DaysDropping bool
 	IsMA20DaysRising   bool
@@ -24,4 +22,11 @@ type MABarCloseData struct {
 	CurrMA30Close float64
 	PrevMA20Close float64
 	PrevMA30Close float64
+}
+
+type PositionData struct {
+	HasLongPosition  bool
+	HasShortPosition bool
+	FilledQuantity   float64
+	FilledPrice      float64
 }
