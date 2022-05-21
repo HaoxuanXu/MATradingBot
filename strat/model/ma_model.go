@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/alpacahq/alpaca-trade-api-go/alpaca"
+	"github.com/alpacahq/alpaca-trade-api-go/v2/marketdata"
 )
 
 // the ma conditions will track if the 15 minutes 20 day ma and 30 day ma is dropping or rising
@@ -17,8 +17,8 @@ type MAConditions struct {
 }
 
 type MABarData struct {
-	CurrMA20Bar alpaca.Bar
-	CurrMA30Bar alpaca.Bar
-	PrevMA20Bar alpaca.Bar
-	PrevMA30Bar alpaca.Bar
+	CurrMA20Bar marketdata.Bar
+	CurrMA30Bar marketdata.Bar
+	PrevMA20Bar marketdata.Bar
+	PrevMA30Bar marketdata.Bar
 }
