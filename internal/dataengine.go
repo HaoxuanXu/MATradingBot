@@ -29,10 +29,10 @@ func (engine *MarketDataEngine) initialize(accountType, serverType string) {
 	)
 }
 
-func (engine *MarketDataEngine) GetMultiBars(symbols []string, days int) map[string][]marketdata.Bar {
+func (engine *MarketDataEngine) GetMultiBars(symbols []string, timeframe, days int) map[string][]marketdata.Bar {
 
 	result, err := engine.client.GetMultiBars(symbols, marketdata.GetBarsParams{
-		TimeFrame:  marketdata.NewTimeFrame(15, marketdata.TimeFrameUnit(marketdata.Min)),
+		TimeFrame:  marketdata.NewTimeFrame(timeframe, marketdata.TimeFrameUnit(marketdata.Min)),
 		Adjustment: marketdata.Adjustment(marketdata.Raw),
 		Start:      util.GetStartTime(time.Now(), days),
 		End:        time.Now(),
