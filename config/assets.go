@@ -1,6 +1,6 @@
-package assets
+package config
 
-var Asset = []string{
+var Assets = []string{
 	"IBM",
 	"AMZN",
 	"JNJ",
