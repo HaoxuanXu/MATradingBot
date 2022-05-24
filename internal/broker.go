@@ -10,10 +10,9 @@ import (
 )
 
 type AlpacaBroker struct {
-	client         alpaca.Client
-	account        *alpaca.Account
-	Clock          alpaca.Clock
-	FilledQuantity float64
+	client  alpaca.Client
+	account *alpaca.Account
+	Clock   alpaca.Clock
 }
 
 func GetBroker(accountType, serverType string) *AlpacaBroker {
@@ -37,35 +36,49 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string) {
 	broker.Clock = *clock
 }
 
-func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.Order) {
+func (broker *AlpacaBroker) refreshOrderStatus(orderID string) *alpaca.Order {
 	newOrder, _ := broker.client.GetOrder(orderID)
-	orderStatus := newOrder.Status
 
-	return orderStatus, newOrder
+	return newOrder
 }
 
-func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bool) {
-	success := false
+func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
+	finished := false
 	orderID := order.ID
-	status, updatedOrder := broker.refreshOrderStatus(orderID)
+	order = broker.refreshOrderStatus(orderID)
 	if order.Type == alpaca.Market {
-		for !success {
-			switch status {
+		for !finished {
+			switch order.Status {
 			case "new", "accepted", "partially_filled":
 				time.Sleep(time.Second)
-				status, updatedOrder = broker.refreshOrderStatus(orderID)
+				order = broker.refreshOrderStatus(orderID)
 			case "filled":
-				success = true
+				finished = true
 			case "done_for_day", "canceled", "expired", "replaced":
-				success = false
+				finished = true
 			default:
 				time.Sleep(time.Second)
-				status, updatedOrder = broker.refreshOrderStatus(orderID)
+				order = broker.refreshOrderStatus(orderID)
+			}
+		}
+	} else if order.Type == alpaca.TrailingStop {
+		for !finished {
+			switch order.Status {
+			case "accepted", "partially_filled":
+				time.Sleep(time.Second)
+				order = broker.refreshOrderStatus(orderID)
+			case "new":
+				finished = true
+			case "done_for_day", "canceled", "expired", "replaced":
+				finished = true
+			default:
+				time.Sleep(time.Second)
+				order = broker.refreshOrderStatus(orderID)
 			}
 		}
 	}
 
-	return updatedOrder, success
+	return order
 }
 
 func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInForce string) *alpaca.Order {
@@ -81,8 +94,7 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 		},
 	)
 
-	finalOrder, _ := broker.MonitorOrder(order)
-	broker.FilledQuantity = finalOrder.FilledQty.InexactFloat64()
+	finalOrder := broker.MonitorOrder(order)
 	return finalOrder
 
 }
@@ -101,11 +113,8 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_percent float64, 
 			TimeInForce:  alpaca.Day,
 		},
 	)
-	for order.Status != "new" {
-		_, order = broker.refreshOrderStatus(order.ID)
-		time.Sleep(5 * time.Second)
-	}
-	return order
+	finalOrder := broker.MonitorOrder(order)
+	return finalOrder
 }
 
 func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
