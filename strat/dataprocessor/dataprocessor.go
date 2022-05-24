@@ -19,6 +19,9 @@ func fillCurrPrevClose(model *model.DataModel, data *model.TotalBarData) {
 }
 
 func updateCondition(model *model.DataModel) {
+	model.Condition.IsMA20DaysPreviouslyDropping = model.Condition.IsMA20DaysDropping
+	model.Condition.IsMA20DaysPreviouslyRising = model.Condition.IsMA20DaysRising
+
 	if model.CloseData.CurrMA20Close > model.CloseData.PrevMA20Close {
 		model.Condition.IsMA20DaysRising = true
 		model.Condition.IsMA20DaysDropping = false
@@ -55,6 +58,13 @@ func updateCondition(model *model.DataModel) {
 
 func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	currentBar := data.Data[model.Symbol][0]
+
+	if model.Condition.IsMA20DaysRising && !model.Condition.IsMA20DaysPreviouslyRising {
+		model.Trails.ShortTrailCandidate = 0.0
+	} else if model.Condition.IsMA20DaysDropping && !model.Condition.IsMA20DaysPreviouslyDropping {
+		model.Trails.LongTrailCandidate = 0.0
+	}
+
 	if model.Condition.IsMA20DaysRising {
 		if currentBar.Close < model.Trails.HWM {
 			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.HWM-currentBar.Close)

@@ -28,12 +28,14 @@ type TotalBarData struct {
 }
 
 type MAConditions struct {
-	IsMA20DaysDropping bool
-	IsMA30DaysDropping bool
-	IsMA20DaysRising   bool
-	IsMA30DaysRising   bool
-	IsMA20AboveMA30    bool
-	IsMA20BelowMA30    bool
+	IsMA20DaysDropping           bool
+	IsMA20DaysPreviouslyDropping bool
+	IsMA30DaysDropping           bool
+	IsMA20DaysRising             bool
+	IsMA20DaysPreviouslyRising   bool
+	IsMA30DaysRising             bool
+	IsMA20AboveMA30              bool
+	IsMA20BelowMA30              bool
 }
 
 type TrailData struct {
