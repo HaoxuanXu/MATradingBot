@@ -7,12 +7,12 @@ import (
 
 // the ma conditions will track if the 15 minutes 20 day ma and 30 day ma is dropping or rising
 
-func GetDataModel(symbol string, trailsLength int) DataModel {
+func GetDataModel(symbol string, trailsLength int) *DataModel {
 	model := DataModel{
 		Symbol: symbol,
 	}
-	model.Trails.DataLength = trailsLength
-	return model
+	model.Trails.ArrayLength = trailsLength
+	return &model
 }
 
 type DataModel struct {
@@ -28,8 +28,6 @@ type TotalBarData struct {
 }
 
 type MAConditions struct {
-	HWM                float64
-	Trail              float64
 	IsMA20DaysDropping bool
 	IsMA30DaysDropping bool
 	IsMA20DaysRising   bool
@@ -38,7 +36,19 @@ type MAConditions struct {
 	IsMA20BelowMA30    bool
 }
 
+type TrailData struct {
+	HWM                 float64
+	LongTrailCandidate  float64
+	ShortTrailCandidate float64
+	LongTrailArray      []float64
+	ShortTrailArray     []float64
+	ArrayLength         int
+	AppliedLongTrail    float64
+	AppliedShortTrail   float64
+}
+
 type MABarCloseData struct {
+	CurrMAClose   float64
 	CurrMA20Close float64
 	CurrMA30Close float64
 	PrevMA20Close float64
@@ -53,14 +63,9 @@ type PositionData struct {
 	CurrentTrail     float64
 }
 
-type TrailData struct {
-	TrailDataArray []float64
-	DataLength     int
-}
-
 func (position *PositionData) GetPosition(symbol string, broker *internal.AlpacaBroker) {
-	positionData := broker.GetPosition(symbol)
-	if positionData == nil {
+	positionData, err := broker.GetPosition(symbol)
+	if positionData == nil && err != nil {
 		position.HasLongPosition = false
 		position.HasShortPosition = false
 		position.FilledQuantity = 0.0

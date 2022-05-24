@@ -87,7 +87,7 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 
 }
 
-func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_percent float64, symbol, side, timeInForce string) *alpaca.Order {
+func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_percent float64, symbol, side string) *alpaca.Order {
 	quantity := decimal.NewFromFloat(qty)
 	trail := decimal.NewFromFloat(trail_percent)
 	order, _ := broker.client.PlaceOrder(
@@ -98,6 +98,7 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_percent float64, 
 			Side:         alpaca.Side(side),
 			Type:         alpaca.OrderType(alpaca.TrailingStop),
 			TrailPercent: &trail,
+			TimeInForce:  alpaca.Day,
 		},
 	)
 	for order.Status != "new" {
@@ -115,11 +116,26 @@ func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 	return positions
 }
 
-func (broker *AlpacaBroker) GetPosition(symbol string) *alpaca.Position {
+func (broker *AlpacaBroker) GetPosition(symbol string) (*alpaca.Position, error) {
 	position, err := broker.client.GetPosition(symbol)
 	if err != nil {
 		log.Println(err)
-		return nil
+		return nil, err
 	}
-	return position
+	return position, nil
+}
+
+func (broker *AlpacaBroker) ClosePosition(symbol string) error {
+	// Check if the position has already been closed or not
+	position, err := broker.GetPosition(symbol)
+	if position == nil && err != nil {
+		log.Printf("The %s position has already been closed.\n", symbol)
+		return err
+	}
+	err = broker.client.ClosePosition(symbol)
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
+		return err
+	}
+	return nil
 }
