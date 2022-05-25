@@ -117,6 +117,19 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_percent float64, 
 	return finalOrder
 }
 
+func (broker *AlpacaBroker) ChangeOrderTrail(order *alpaca.Order, newTrail float64) *alpaca.Order {
+	ordeID := order.ID
+	newTrailDecimal := decimal.NewFromFloat(newTrail)
+	order, _ = broker.client.ReplaceOrder(
+		ordeID,
+		alpaca.ReplaceOrderRequest{
+			Trail: &newTrailDecimal,
+		},
+	)
+	finalOrder := broker.MonitorOrder(order)
+	return finalOrder
+}
+
 func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 	positions, err := broker.client.ListPositions()
 	if err != nil {

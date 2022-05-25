@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/HaoxuanXu/MATradingBot/internal"
+	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/marketdata"
 )
 
@@ -58,6 +59,7 @@ type MABarCloseData struct {
 }
 
 type PositionData struct {
+	Order            alpaca.Order
 	HasLongPosition  bool
 	HasShortPosition bool
 	FilledQuantity   float64

@@ -1,11 +1,13 @@
 package transaction
 
 import (
+	"github.com/HaoxuanXu/MATradingBot/internal"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
-func UpdatePositionFieldAfterTransaction(model *model.DataModel, order *alpaca.Order) {
+func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order) {
+	model.Position.Order = *order
 	model.Position.CurrentTrail = order.TrailPrice.InexactFloat64()
 	model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
 	model.Position.FilledPrice = order.FilledAvgPrice.InexactFloat64()
@@ -15,5 +17,17 @@ func UpdatePositionFieldAfterTransaction(model *model.DataModel, order *alpaca.O
 	} else {
 		model.Position.HasLongPosition = true
 		model.Position.HasShortPosition = false
+	}
+}
+
+func CheckIfPositionStillOpen(model *model.DataModel, broker *internal.AlpacaBroker) {
+	position, _ := broker.GetPosition(model.Symbol)
+	if position == nil {
+		model.Position.CurrentTrail = 0.0
+		model.Position.HasLongPosition = false
+		model.Position.HasShortPosition = false
+		model.Position.FilledQuantity = 0.0
+		model.Position.FilledPrice = 0.0
+		model.Position.CurrentTrail = 0.0
 	}
 }

@@ -27,6 +27,6 @@ func MATradingStrategy(symbol, accountType, serverType string, entryAmount float
 		if signalcatcher.CanEnterLong(dataModel) {
 			order = broker.SubmitTrailingStopOrder(qty, dataModel.Position.CurrentTrail, symbol, "buy")
 		}
-		transaction.UpdatePositionFieldAfterTransaction(dataModel, order)
+		transaction.UpdatePositionAfterTransaction(dataModel, order)
 	}
 }
