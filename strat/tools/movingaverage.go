@@ -7,10 +7,10 @@ import (
 	"github.com/montanaflynn/stats"
 )
 
-func CalcMovingAverage(barData []marketdata.Bar, endTime time.Time, days int) float64 {
+func CalcMovingAverage(barData []marketdata.Bar, endTime time.Time, periods int) float64 {
 	var closeArray []float64
 
-	barSubArray := GetBarSubArray(barData, endTime, days)
+	barSubArray := GetBarSubArray(barData, endTime, periods)
 	for _, bar := range barSubArray {
 		closeArray = append(closeArray, bar.Close)
 	}

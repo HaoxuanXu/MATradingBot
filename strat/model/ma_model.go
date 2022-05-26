@@ -29,14 +29,12 @@ type TotalBarData struct {
 }
 
 type MAConditions struct {
-	IsMA20DaysDropping           bool
-	IsMA20DaysPreviouslyDropping bool
-	IsMA30DaysDropping           bool
-	IsMA20DaysRising             bool
-	IsMA20DaysPreviouslyRising   bool
-	IsMA30DaysRising             bool
-	IsMA20AboveMA30              bool
-	IsMA20BelowMA30              bool
+	IsMA20PeriodsDropping           bool
+	IsMA20PeriodsPreviouslyDropping bool
+	IsMA20PeriodsRising             bool
+	IsMA20PeriodsPreviouslyRising   bool
+	IsMABelowMA20                   bool
+	IsMAAboveMA20                   bool
 }
 
 type TrailData struct {
@@ -53,13 +51,11 @@ type TrailData struct {
 type MABarCloseData struct {
 	CurrMAClose   float64
 	CurrMA20Close float64
-	CurrMA30Close float64
 	PrevMA20Close float64
-	PrevMA30Close float64
 }
 
 type PositionData struct {
-	Order            alpaca.Order
+	Order            *alpaca.Order
 	HasLongPosition  bool
 	HasShortPosition bool
 	FilledQuantity   float64

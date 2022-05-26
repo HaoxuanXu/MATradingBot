@@ -7,8 +7,8 @@ import (
 // In order to go long, 20MA has to be above  30MA and both MAs have to be rising
 func CanEnterLong(model *model.DataModel) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.Condition.IsMA20DaysRising && model.Condition.IsMA30DaysRising &&
-		model.Condition.IsMA20AboveMA30 {
+		model.Condition.IsMA20PeriodsRising &&
+		model.Condition.IsMAAboveMA20 {
 		return true
 	}
 	return false
@@ -16,8 +16,8 @@ func CanEnterLong(model *model.DataModel) bool {
 
 func CanEnterShort(model *model.DataModel) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.Condition.IsMA20DaysDropping && model.Condition.IsMA30DaysDropping &&
-		model.Condition.IsMA20BelowMA30 {
+		model.Condition.IsMA20PeriodsDropping &&
+		model.Condition.IsMABelowMA20 {
 		return true
 	}
 	return false
@@ -25,7 +25,7 @@ func CanEnterShort(model *model.DataModel) bool {
 
 func CanCloseLong(conditions model.MAConditions, position model.PositionData) bool {
 	if position.HasLongPosition && !position.HasShortPosition &&
-		conditions.IsMA20DaysDropping {
+		conditions.IsMA20PeriodsDropping {
 		return true
 	}
 	return false
@@ -33,7 +33,7 @@ func CanCloseLong(conditions model.MAConditions, position model.PositionData) bo
 
 func CanCloseShort(conditions model.MAConditions, position model.PositionData) bool {
 	if position.HasShortPosition && !position.HasLongPosition &&
-		conditions.IsMA20DaysRising {
+		conditions.IsMA20PeriodsRising {
 		return true
 	}
 	return false

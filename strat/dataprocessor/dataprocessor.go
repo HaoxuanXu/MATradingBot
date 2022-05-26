@@ -13,59 +13,44 @@ import (
 func fillCurrPrevClose(model *model.DataModel, data *model.TotalBarData) {
 	model.CloseData.CurrMAClose = data.Data[model.Symbol][0].Close
 	model.CloseData.CurrMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now(), 20)
-	model.CloseData.CurrMA30Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now(), 30)
 	model.CloseData.PrevMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now().Add(-time.Duration(15*time.Minute)), 20)
-	model.CloseData.PrevMA30Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now().Add(-time.Duration(15*time.Minute)), 30)
 }
 
 func updateCondition(model *model.DataModel) {
-	model.Condition.IsMA20DaysPreviouslyDropping = model.Condition.IsMA20DaysDropping
-	model.Condition.IsMA20DaysPreviouslyRising = model.Condition.IsMA20DaysRising
+	model.Condition.IsMA20PeriodsPreviouslyDropping = model.Condition.IsMA20PeriodsDropping
+	model.Condition.IsMA20PeriodsPreviouslyRising = model.Condition.IsMA20PeriodsRising
 
 	if model.CloseData.CurrMA20Close > model.CloseData.PrevMA20Close {
-		model.Condition.IsMA20DaysRising = true
-		model.Condition.IsMA20DaysDropping = false
+		model.Condition.IsMA20PeriodsRising = true
+		model.Condition.IsMA20PeriodsDropping = false
 	} else if model.CloseData.CurrMA20Close < model.CloseData.PrevMA20Close {
-		model.Condition.IsMA20DaysRising = false
-		model.Condition.IsMA20DaysDropping = true
+		model.Condition.IsMA20PeriodsRising = false
+		model.Condition.IsMA20PeriodsDropping = true
 	} else if model.CloseData.CurrMA20Close == model.CloseData.PrevMA20Close {
-		model.Condition.IsMA20DaysDropping = false
-		model.Condition.IsMA20DaysRising = false
+		model.Condition.IsMA20PeriodsDropping = false
+		model.Condition.IsMA20PeriodsRising = false
 	}
 
-	if model.CloseData.CurrMA30Close > model.CloseData.PrevMA30Close {
-		model.Condition.IsMA30DaysRising = true
-		model.Condition.IsMA30DaysDropping = false
-	} else if model.CloseData.CurrMA30Close < model.CloseData.PrevMA30Close {
-		model.Condition.IsMA30DaysRising = false
-		model.Condition.IsMA30DaysDropping = true
-	} else if model.CloseData.CurrMA30Close == model.CloseData.PrevMA30Close {
-		model.Condition.IsMA30DaysDropping = false
-		model.Condition.IsMA30DaysRising = false
+	if model.CloseData.CurrMAClose > model.CloseData.CurrMA20Close {
+		model.Condition.IsMAAboveMA20 = true
+		model.Condition.IsMABelowMA20 = false
+	} else {
+		model.Condition.IsMABelowMA20 = true
+		model.Condition.IsMAAboveMA20 = false
 	}
 
-	if model.CloseData.CurrMA20Close > model.CloseData.CurrMA30Close {
-		model.Condition.IsMA20AboveMA30 = true
-		model.Condition.IsMA20BelowMA30 = false
-	} else if model.CloseData.CurrMA20Close < model.CloseData.CurrMA30Close {
-		model.Condition.IsMA20AboveMA30 = false
-		model.Condition.IsMA20BelowMA30 = true
-	} else if model.CloseData.CurrMA20Close == model.CloseData.CurrMA30Close {
-		model.Condition.IsMA20AboveMA30 = false
-		model.Condition.IsMA20BelowMA30 = false
-	}
 }
 
 func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	currentBar := data.Data[model.Symbol][0]
 
-	if model.Condition.IsMA20DaysRising && !model.Condition.IsMA20DaysPreviouslyRising {
+	if model.Condition.IsMA20PeriodsRising && !model.Condition.IsMA20PeriodsPreviouslyRising {
 		model.Trails.ShortTrailCandidate = 0.0
-	} else if model.Condition.IsMA20DaysDropping && !model.Condition.IsMA20DaysPreviouslyDropping {
+	} else if model.Condition.IsMA20PeriodsDropping && !model.Condition.IsMA20PeriodsPreviouslyDropping {
 		model.Trails.LongTrailCandidate = 0.0
 	}
 
-	if model.Condition.IsMA20DaysRising {
+	if model.Condition.IsMA20PeriodsRising {
 		if currentBar.Close < model.Trails.HWM {
 			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.HWM-currentBar.Close)
 		} else if currentBar.Close > model.Trails.HWM {
@@ -74,7 +59,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 			model.Trails.LongTrailCandidate = 0.0
 			model.Trails.HWM = currentBar.Close
 		}
-	} else if model.Condition.IsMA20DaysDropping {
+	} else if model.Condition.IsMA20PeriodsDropping {
 		if currentBar.Close > model.Trails.HWM {
 			model.Trails.ShortTrailCandidate = math.Max(model.Trails.ShortTrailCandidate, currentBar.Close-model.Trails.HWM)
 		} else if currentBar.Close < model.Trails.HWM {
