@@ -8,7 +8,7 @@ import (
 func CanEnterLong(model *model.DataModel) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Condition.IsMA20PeriodsRising &&
-		model.Condition.IsMAAboveMA20 {
+		model.Condition.IsMAAboveMA20 && model.CloseData.CurrMAClose > model.CloseData.MAResistance {
 		return true
 	}
 	return false
@@ -17,7 +17,7 @@ func CanEnterLong(model *model.DataModel) bool {
 func CanEnterShort(model *model.DataModel) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Condition.IsMA20PeriodsDropping &&
-		model.Condition.IsMABelowMA20 {
+		model.Condition.IsMABelowMA20 && model.CloseData.CurrMAClose < model.CloseData.MASupport {
 		return true
 	}
 	return false

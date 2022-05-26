@@ -31,12 +31,12 @@ func (engine *MarketDataEngine) initialize(accountType, serverType string) {
 	engine.Assets = config.Assets
 }
 
-func (engine *MarketDataEngine) GetMultiBars(timeframe, days int) map[string][]marketdata.Bar {
+func (engine *MarketDataEngine) GetMultiBars(timeframe, periods int) map[string][]marketdata.Bar {
 
 	result, err := engine.client.GetMultiBars(engine.Assets, marketdata.GetBarsParams{
 		TimeFrame:  marketdata.NewTimeFrame(timeframe, marketdata.TimeFrameUnit(marketdata.Min)),
 		Adjustment: marketdata.Adjustment(marketdata.Raw),
-		Start:      util.GetStartTime(time.Now(), days),
+		Start:      util.GetStartTime(time.Now(), 1),
 		End:        time.Now(),
 	})
 	if err != nil {

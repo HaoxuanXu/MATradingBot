@@ -11,7 +11,7 @@ func GetBarSubArray(rawArray []marketdata.Bar, endTime time.Time, periods int) [
 
 	for _, bar := range rawArray {
 		if len(result) < periods {
-			if bar.Timestamp.Before(endTime) {
+			if bar.Timestamp.Before(endTime) || bar.Timestamp.Equal(endTime) {
 				result = append(result, bar)
 			}
 		}

@@ -8,7 +8,7 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/db"
 )
 
-func WriteFloatArrayToFile(arr []float64, symbol, side string) {
+func WriteFloatArrayToJson(arr []float64, symbol, side string) {
 	arrBytes, err := json.Marshal(arr)
 	if err != nil {
 		log.Panicf("marshalling failed: %v", err)
