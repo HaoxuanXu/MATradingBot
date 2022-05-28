@@ -31,7 +31,7 @@ func (engine *MarketDataEngine) initialize(accountType, serverType string) {
 	engine.Assets = config.Assets
 }
 
-func (engine *MarketDataEngine) GetMultiBars(timeframe, periods int) map[string][]marketdata.Bar {
+func (engine *MarketDataEngine) GetMultiBars(timeframe int) map[string][]marketdata.Bar {
 
 	result, err := engine.client.GetMultiBars(engine.Assets, marketdata.GetBarsParams{
 		TimeFrame:  marketdata.NewTimeFrame(timeframe, marketdata.TimeFrameUnit(marketdata.Min)),

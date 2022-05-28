@@ -2,12 +2,13 @@ package transaction
 
 import (
 	"github.com/HaoxuanXu/MATradingBot/internal"
+	"github.com/HaoxuanXu/MATradingBot/internal/readwrite"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
 func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order) {
-	model.Position.Order = order
+	model.Position.Order = *order
 	model.Position.CurrentTrail = order.TrailPrice.InexactFloat64()
 	model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
 	model.Position.FilledPrice = order.FilledAvgPrice.InexactFloat64()
@@ -31,6 +32,7 @@ func RetrievePositionIfExists(model *model.DataModel, broker *internal.AlpacaBro
 		model.Position.CurrentTrail = 0.0
 	} else {
 		order, _ := broker.RetrieveOrderIfExists(model.Symbol, "new")
+		model.Position.Order = *order
 		model.Position.CurrentTrail = order.TrailPrice.Abs().InexactFloat64()
 		model.Position.FilledPrice = order.FilledAvgPrice.Abs().InexactFloat64()
 		model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
@@ -42,4 +44,14 @@ func RetrievePositionIfExists(model *model.DataModel, broker *internal.AlpacaBro
 			model.Position.HasLongPosition = true
 		}
 	}
+}
+
+func ReadModelFromDB(model *model.DataModel) {
+	model.Trails.LongTrailArray = readwrite.ReadFloatArrayToJson(model.Symbol, "long")
+	model.Trails.ShortTrailArray = readwrite.ReadFloatArrayToJson(model.Symbol, "short")
+}
+
+func WriteModelToDB(model *model.DataModel) {
+	readwrite.WriteFloatArrayToJson(model.Trails.LongTrailArray, model.Symbol, "long")
+	readwrite.WriteFloatArrayToJson(model.Trails.ShortTrailArray, model.Symbol, "short")
 }

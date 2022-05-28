@@ -1,4 +1,4 @@
-package io
+package readwrite
 
 import (
 	"encoding/json"

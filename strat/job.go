@@ -7,15 +7,16 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/internal"
 	"github.com/HaoxuanXu/MATradingBot/strat/dataprocessor"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
+	"github.com/HaoxuanXu/MATradingBot/strat/pipeline"
 	"github.com/HaoxuanXu/MATradingBot/strat/signalcatcher"
 	"github.com/HaoxuanXu/MATradingBot/strat/transaction"
-	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
 func MATradingStrategy(symbol, accountType, serverType string, entryAmount float64, totalData *model.TotalBarData) {
 	broker := internal.GetBroker(accountType, serverType)
 	dataModel := model.GetDataModel(symbol, 30)
-	var order *alpaca.Order
+	transaction.RetrievePositionIfExists(dataModel, broker)
+	transaction.ReadModelFromDB(dataModel)
 
 	for !broker.Clock.IsOpen {
 		log.Printf("Wait for %.2f minutes till the market opens\n", time.Until(broker.Clock.NextOpen).Minutes())
@@ -25,8 +26,14 @@ func MATradingStrategy(symbol, accountType, serverType string, entryAmount float
 		dataprocessor.ProcessBarData(dataModel, totalData)
 		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAClose))
 		if signalcatcher.CanEnterLong(dataModel) {
-			order = broker.SubmitTrailingStopOrder(qty, dataModel.Position.CurrentTrail, symbol, "buy")
+			pipeline.EnterLongPosition(dataModel, broker, qty)
+		} else if signalcatcher.CanEnterShort(dataModel) {
+			pipeline.EnterShortPosition(dataModel, broker, qty)
+		} else {
+			time.Sleep(time.Minute)
 		}
-		transaction.UpdatePositionAfterTransaction(dataModel, order)
 	}
+
+	transaction.WriteModelToDB(dataModel)
+
 }

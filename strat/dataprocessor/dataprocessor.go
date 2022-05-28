@@ -4,16 +4,19 @@ import (
 	"math"
 	"time"
 
+	"github.com/HaoxuanXu/MATradingBot/strat/constants"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/HaoxuanXu/MATradingBot/strat/tools"
 	"github.com/HaoxuanXu/MATradingBot/util"
 	"github.com/montanaflynn/stats"
 )
 
-func fillCurrPrevClose(model *model.DataModel, data *model.TotalBarData) {
+func updateClose(model *model.DataModel, data *model.TotalBarData) {
 	model.CloseData.CurrMAClose = data.Data[model.Symbol][0].Close
 	model.CloseData.CurrMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now(), 20)
 	model.CloseData.PrevMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now().Add(-time.Duration(15*time.Minute)), 20)
+	model.CloseData.MASupport = tools.CalcSupportResistance(data.Data[model.Symbol], constants.SUPPORT)
+	model.CloseData.MAResistance = tools.CalcSupportResistance(data.Data[model.Symbol], constants.RESISTANCE)
 }
 
 func updateCondition(model *model.DataModel) {
@@ -74,7 +77,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 }
 
 func ProcessBarData(model *model.DataModel, data *model.TotalBarData) {
-	fillCurrPrevClose(model, data)
+	updateClose(model, data)
 	updateCondition(model)
 	updateTrail(model, data)
 

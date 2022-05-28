@@ -57,7 +57,7 @@ type MABarCloseData struct {
 }
 
 type PositionData struct {
-	Order            *alpaca.Order
+	Order            alpaca.Order
 	HasLongPosition  bool
 	HasShortPosition bool
 	FilledQuantity   float64
