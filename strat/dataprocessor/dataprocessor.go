@@ -15,6 +15,7 @@ func updateClose(model *model.DataModel, data *model.TotalBarData) {
 	model.CloseData.CurrMAClose = data.Data[model.Symbol][0].Close
 	model.CloseData.PrevMAClose = data.Data[model.Symbol][1].Close
 	model.CloseData.CurrMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now(), 20)
+	model.CloseData.PrevMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now().Add(-time.Minute), 20)
 	model.CloseData.MASupport = tools.CalcSupportResistance(data.Data[model.Symbol], constants.SUPPORT)
 	model.CloseData.MAResistance = tools.CalcSupportResistance(data.Data[model.Symbol], constants.RESISTANCE)
 }
