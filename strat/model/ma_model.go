@@ -18,7 +18,6 @@ func GetDataModel(symbol string, trailsLength int) *DataModel {
 
 type DataModel struct {
 	Symbol    string
-	Condition MAConditions
 	CloseData MABarCloseData
 	Position  PositionData
 	Trails    TrailData
@@ -26,15 +25,6 @@ type DataModel struct {
 
 type TotalBarData struct {
 	Data map[string][]marketdata.Bar
-}
-
-type MAConditions struct {
-	IsMA20PeriodsDropping           bool
-	IsMA20PeriodsPreviouslyDropping bool
-	IsMA20PeriodsRising             bool
-	IsMA20PeriodsPreviouslyRising   bool
-	IsMABelowMA20                   bool
-	IsMAAboveMA20                   bool
 }
 
 type TrailData struct {
@@ -52,6 +42,7 @@ type MABarCloseData struct {
 	MASupport     float64
 	MAResistance  float64
 	CurrMAClose   float64
+	PrevMAClose   float64
 	CurrMA20Close float64
 	PrevMA20Close float64
 }

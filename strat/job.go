@@ -25,15 +25,14 @@ func MATradingStrategy(symbol, accountType, serverType string, entryAmount float
 	for broker.Clock.IsOpen {
 		dataprocessor.ProcessBarData(dataModel, totalData)
 		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAClose))
-		if signalcatcher.CanEnterLong(dataModel) {
+		if signalcatcher.CanEnterLong(dataModel, broker) {
 			pipeline.EnterLongPosition(dataModel, broker, qty)
-		} else if signalcatcher.CanEnterShort(dataModel) {
+		} else if signalcatcher.CanEnterShort(dataModel, broker) {
 			pipeline.EnterShortPosition(dataModel, broker, qty)
 		} else {
 			time.Sleep(time.Minute)
+			transaction.WriteModelToDB(dataModel)
 		}
 	}
-
-	transaction.WriteModelToDB(dataModel)
 
 }

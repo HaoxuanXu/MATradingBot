@@ -1,39 +1,28 @@
 package signalcatcher
 
 import (
+	"time"
+
+	"github.com/HaoxuanXu/MATradingBot/internal"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 )
 
 // In order to go long, 20MA has to be above  30MA and both MAs have to be rising
-func CanEnterLong(model *model.DataModel) bool {
+func CanEnterLong(model *model.DataModel, broker *internal.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.Condition.IsMA20PeriodsRising &&
-		model.Condition.IsMAAboveMA20 && model.CloseData.CurrMAClose > model.CloseData.MAResistance {
+		model.CloseData.CurrMAClose > model.CloseData.CurrMA20Close &&
+		model.CloseData.CurrMAClose > model.CloseData.MAResistance &&
+		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
 	return false
 }
 
-func CanEnterShort(model *model.DataModel) bool {
+func CanEnterShort(model *model.DataModel, broker *internal.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.Condition.IsMA20PeriodsDropping &&
-		model.Condition.IsMABelowMA20 && model.CloseData.CurrMAClose < model.CloseData.MASupport {
-		return true
-	}
-	return false
-}
-
-func CanCloseLong(conditions model.MAConditions, position model.PositionData) bool {
-	if position.HasLongPosition && !position.HasShortPosition &&
-		conditions.IsMA20PeriodsDropping {
-		return true
-	}
-	return false
-}
-
-func CanCloseShort(conditions model.MAConditions, position model.PositionData) bool {
-	if position.HasShortPosition && !position.HasLongPosition &&
-		conditions.IsMA20PeriodsRising {
+		model.CloseData.CurrMAClose < model.CloseData.CurrMA20Close &&
+		model.CloseData.CurrMAClose < model.CloseData.MASupport &&
+		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
 	return false

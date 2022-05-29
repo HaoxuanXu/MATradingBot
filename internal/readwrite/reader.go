@@ -14,12 +14,12 @@ func ReadFloatArrayToJson(symbol, side string) []float64 {
 
 	resultBytes, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Panicf("file reading failed: %v", err)
+		log.Printf("file reading failed: %v\n", err)
 	}
 
 	err = json.Unmarshal(resultBytes, &resultContainer)
 	if err != nil {
-		log.Panicf("file unmarshalling failed: %v", err)
+		log.Printf("file unmarshalling failed: %v\n", err)
 	}
 
 	return resultContainer
