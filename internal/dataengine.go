@@ -11,7 +11,6 @@ import (
 
 type MarketDataEngine struct {
 	client marketdata.Client
-	Assets []string
 }
 
 func GetDataEngine(accountType, serverType string) *MarketDataEngine {
@@ -28,12 +27,11 @@ func (engine *MarketDataEngine) initialize(accountType, serverType string) {
 			ApiSecret: cred.API_SECRET,
 		},
 	)
-	engine.Assets = config.Assets
 }
 
-func (engine *MarketDataEngine) GetMultiBars(timeframe int) map[string][]marketdata.Bar {
+func (engine *MarketDataEngine) GetMultiBars(timeframe int, assets []string) map[string][]marketdata.Bar {
 
-	result, err := engine.client.GetMultiBars(engine.Assets, marketdata.GetBarsParams{
+	result, err := engine.client.GetMultiBars(assets, marketdata.GetBarsParams{
 		TimeFrame:  marketdata.NewTimeFrame(timeframe, marketdata.TimeFrameUnit(marketdata.Min)),
 		Adjustment: marketdata.Adjustment(marketdata.Raw),
 		Start:      util.GetStartTime(time.Now(), 1),

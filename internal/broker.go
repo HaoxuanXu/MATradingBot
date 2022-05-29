@@ -13,6 +13,7 @@ type AlpacaBroker struct {
 	client  alpaca.Client
 	account *alpaca.Account
 	Clock   alpaca.Clock
+	Cash    float64
 }
 
 func GetBroker(accountType, serverType string) *AlpacaBroker {
@@ -34,9 +35,10 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string) {
 	broker.account, _ = broker.client.GetAccount()
 	clock, _ := broker.client.GetClock()
 	broker.Clock = *clock
+	broker.Cash = broker.account.Cash.InexactFloat64()
 }
 
-func (broker *AlpacaBroker) refreshOrderStatus(orderID string) *alpaca.Order {
+func (broker *AlpacaBroker) RefreshOrderStatus(orderID string) *alpaca.Order {
 	newOrder, _ := broker.client.GetOrder(orderID)
 
 	return newOrder
@@ -45,20 +47,20 @@ func (broker *AlpacaBroker) refreshOrderStatus(orderID string) *alpaca.Order {
 func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 	finished := false
 	orderID := order.ID
-	order = broker.refreshOrderStatus(orderID)
+	order = broker.RefreshOrderStatus(orderID)
 	if order.Type == alpaca.Market {
 		for !finished {
 			switch order.Status {
 			case "new", "accepted", "partially_filled":
 				time.Sleep(time.Second)
-				order = broker.refreshOrderStatus(orderID)
+				order = broker.RefreshOrderStatus(orderID)
 			case "filled":
 				finished = true
 			case "done_for_day", "canceled", "expired", "replaced":
 				finished = true
 			default:
 				time.Sleep(time.Second)
-				order = broker.refreshOrderStatus(orderID)
+				order = broker.RefreshOrderStatus(orderID)
 			}
 		}
 	} else if order.Type == alpaca.TrailingStop {
@@ -66,14 +68,14 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 			switch order.Status {
 			case "accepted", "partially_filled":
 				time.Sleep(time.Second)
-				order = broker.refreshOrderStatus(orderID)
+				order = broker.RefreshOrderStatus(orderID)
 			case "new":
 				finished = true
 			case "done_for_day", "canceled", "expired", "replaced":
 				finished = true
 			default:
 				time.Sleep(time.Second)
-				order = broker.refreshOrderStatus(orderID)
+				order = broker.RefreshOrderStatus(orderID)
 			}
 		}
 	}

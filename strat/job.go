@@ -1,7 +1,6 @@
 package strat
 
 import (
-	"log"
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/internal"
@@ -12,18 +11,18 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/strat/transaction"
 )
 
-func MATradingStrategy(symbol, accountType, serverType string, entryAmount float64, totalData *model.TotalBarData) {
+func MATradingStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, channel chan bool) {
 	broker := internal.GetBroker(accountType, serverType)
 	dataModel := model.GetDataModel(symbol, 30)
-	transaction.RetrievePositionIfExists(dataModel, broker)
 	transaction.ReadModelFromDB(dataModel)
+	entryAmount := broker.Cash * entryPercent
 
-	for !broker.Clock.IsOpen {
-		log.Printf("Wait for %.2f minutes till the market opens\n", time.Until(broker.Clock.NextOpen).Minutes())
-	}
+	for broker.Clock.IsOpen && <-channel {
 
-	for broker.Clock.IsOpen {
 		dataprocessor.ProcessBarData(dataModel, totalData)
+		pipeline.RefreshDataModel(dataModel, broker)
+		transaction.RecordExitTransaction(dataModel)
+
 		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAClose))
 		if signalcatcher.CanEnterLong(dataModel, broker) {
 			pipeline.EnterLongPosition(dataModel, broker, qty)

@@ -53,6 +53,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 }
 
 func ProcessBarData(model *model.DataModel, data *model.TotalBarData) {
+
 	updateClose(model, data)
 	updateTrail(model, data)
 

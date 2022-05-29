@@ -1,6 +1,8 @@
 package transaction
 
 import (
+	"log"
+
 	"github.com/HaoxuanXu/MATradingBot/internal"
 	"github.com/HaoxuanXu/MATradingBot/internal/readwrite"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
@@ -24,12 +26,10 @@ func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order)
 func RetrievePositionIfExists(model *model.DataModel, broker *internal.AlpacaBroker) {
 	position, _ := broker.GetPosition(model.Symbol)
 	if position == nil {
+		model.Position.Order = *broker.RefreshOrderStatus(model.Position.Order.ID)
 		model.Position.CurrentTrail = 0.0
 		model.Position.HasLongPosition = false
 		model.Position.HasShortPosition = false
-		model.Position.FilledQuantity = 0.0
-		model.Position.FilledPrice = 0.0
-		model.Position.CurrentTrail = 0.0
 	} else {
 		order, _ := broker.RetrieveOrderIfExists(model.Symbol, "new")
 		model.Position.Order = *order
@@ -43,6 +43,22 @@ func RetrievePositionIfExists(model *model.DataModel, broker *internal.AlpacaBro
 			model.Position.HasShortPosition = false
 			model.Position.HasLongPosition = true
 		}
+	}
+}
+
+func RecordEntryTransaction(model *model.DataModel) {
+	if model.Position.HasLongPosition && !model.Position.HasShortPosition {
+		log.Printf("symbol: %s, side: %s, qty: %.2f\n", model.Symbol, "buy", model.Position.FilledQuantity)
+	} else if model.Position.HasShortPosition && !model.Position.HasLongPosition {
+		log.Printf("symbol: %s, side: %s, qty: %.2f\n", model.Symbol, "sell", model.Position.FilledQuantity)
+	}
+}
+
+func RecordExitTransaction(model *model.DataModel) {
+	if !model.Position.HasShortPosition && !model.Position.HasLongPosition {
+		log.Printf("result: $%.2f\n",
+			model.Position.Order.FilledQty.Abs().InexactFloat64()*model.Position.Order.FilledAvgPrice.Abs().InexactFloat64()-
+				model.Position.FilledPrice*model.Position.FilledQuantity)
 	}
 }
 

@@ -6,16 +6,18 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/strat/transaction"
 )
 
-func PopulateDataModel(model *model.DataModel, broker *internal.AlpacaBroker) {
+func RefreshDataModel(model *model.DataModel, broker *internal.AlpacaBroker) {
 	transaction.RetrievePositionIfExists(model, broker)
 }
 
 func EnterLongPosition(model *model.DataModel, broker *internal.AlpacaBroker, qty float64) {
 	order := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedLongTrail, model.Symbol, "buy")
 	transaction.UpdatePositionAfterTransaction(model, order)
+	transaction.RecordEntryTransaction(model)
 }
 
 func EnterShortPosition(model *model.DataModel, broker *internal.AlpacaBroker, qty float64) {
 	order := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedShortTrail, model.Symbol, "sell")
 	transaction.UpdatePositionAfterTransaction(model, order)
+	transaction.RecordEntryTransaction(model)
 }
