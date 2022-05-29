@@ -1,9 +1,10 @@
 package strat
 
 import (
+	"log"
 	"time"
 
-	"github.com/HaoxuanXu/MATradingBot/internal"
+	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/strat/dataprocessor"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/HaoxuanXu/MATradingBot/strat/pipeline"
@@ -12,7 +13,7 @@ import (
 )
 
 func MATradingStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, channel chan bool) {
-	broker := internal.GetBroker(accountType, serverType)
+	broker := api.GetBroker(accountType, serverType)
 	dataModel := model.GetDataModel(symbol, 30)
 	transaction.ReadModelFromDB(dataModel)
 	entryAmount := broker.Cash * entryPercent
@@ -33,5 +34,6 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 			transaction.WriteModelToDB(dataModel)
 		}
 	}
+	log.Printf("%s worker closed", symbol)
 
 }

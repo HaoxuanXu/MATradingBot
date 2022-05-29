@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/HaoxuanXu/MATradingBot/internal"
+	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/marketdata"
 )
@@ -56,7 +56,7 @@ type PositionData struct {
 	CurrentTrail     float64
 }
 
-func (position *PositionData) GetPosition(symbol string, broker *internal.AlpacaBroker) {
+func (position *PositionData) GetPosition(symbol string, broker *api.AlpacaBroker) {
 	positionData, err := broker.GetPosition(symbol)
 	if positionData == nil && err != nil {
 		position.HasLongPosition = false

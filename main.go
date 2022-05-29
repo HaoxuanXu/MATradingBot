@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/config"
-	"github.com/HaoxuanXu/MATradingBot/internal"
+	"github.com/HaoxuanXu/MATradingBot/internal/api"
+	"github.com/HaoxuanXu/MATradingBot/internal/channel"
 	"github.com/HaoxuanXu/MATradingBot/strat"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 )
@@ -18,16 +19,17 @@ func main() {
 
 	var totalData model.TotalBarData
 	assets := config.Assets
-	channelMapper := make(map[string](chan bool))
-	dataEngine := internal.GetDataEngine(accountType, serverType)
-	broker := internal.GetBroker(accountType, serverType)
 
-	for _, asset := range assets {
-		channelMapper[asset] = make(chan bool)
-	}
+	dataEngine := api.GetDataEngine(accountType, serverType)
+	broker := api.GetBroker(accountType, serverType)
+
+	// create channel map
+	chanMap := channel.CreateMap(assets)
+
+	// start workers
 	for _, asset := range assets {
 		log.Printf("Starting worker for %s trading\n", asset)
-		go strat.MATradingStrategy(asset, accountType, serverType, entryPercent, &totalData, channelMapper[asset])
+		go strat.MATradingStrategy(asset, accountType, serverType, entryPercent, &totalData, chanMap.Map[asset])
 	}
 
 	if !broker.Clock.IsOpen {
@@ -35,8 +37,16 @@ func main() {
 		time.Sleep(time.Until(broker.Clock.NextOpen))
 	}
 
+	// start main loop
+	log.Println("Start main loop...")
 	for broker.Clock.IsOpen {
 		totalData.Data = dataEngine.GetMultiBars(1, assets)
+		chanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
 	}
+	// close operation when the market is closed
+	log.Println("Shutting down workers...")
+	chanMap.CloseWorkers()
+	log.Println("Closing channels...")
+	chanMap.CloseChannels()
 }

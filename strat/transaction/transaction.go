@@ -3,7 +3,7 @@ package transaction
 import (
 	"log"
 
-	"github.com/HaoxuanXu/MATradingBot/internal"
+	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/internal/readwrite"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
@@ -23,7 +23,7 @@ func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order)
 	}
 }
 
-func RetrievePositionIfExists(model *model.DataModel, broker *internal.AlpacaBroker) {
+func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) {
 	position, _ := broker.GetPosition(model.Symbol)
 	if position == nil {
 		model.Position.Order = *broker.RefreshOrderStatus(model.Position.Order.ID)
