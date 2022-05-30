@@ -6,7 +6,7 @@ type Path string
 
 const (
 	DATAPATH        Path = "./db/data/"
-	LOGPATH         Path = "./logging/"
+	LOGPATH         Path = "./logs/"
 	MONITORPATH     Path = "./"
 	APPLICATIONPATH Path = "./config/application/"
 )
