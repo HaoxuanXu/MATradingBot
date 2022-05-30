@@ -18,7 +18,7 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 	transaction.ReadModelFromDB(dataModel)
 	entryAmount := broker.Cash * entryPercent
 
-	for broker.Clock.IsOpen && <-channel {
+	for <-channel {
 
 		dataprocessor.ProcessBarData(dataModel, totalData)
 		pipeline.RefreshDataModel(dataModel, broker)
