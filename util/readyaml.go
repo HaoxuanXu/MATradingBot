@@ -7,13 +7,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func ReadYAMLFile(path string) map[interface{}]interface{} {
+func ReadYAMLFile(path string) map[string]interface{} {
 	yfile, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	data := make(map[interface{}]interface{})
+	data := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &data)
 	if err != nil {
 		log.Fatal(err)
