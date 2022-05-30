@@ -11,11 +11,11 @@ import (
 func WriteFloatArrayToJson(arr []float64, symbol, side string) {
 	arrBytes, err := json.Marshal(arr)
 	if err != nil {
-		log.Panicf("marshalling failed: %v", err)
+		log.Fatalf("marshalling failed: %v", err)
 	}
 
 	err = ioutil.WriteFile(db.MapDataFilePath(side, symbol), arrBytes, 0644)
 	if err != nil {
-		log.Panicf("file writing failed: %v", err)
+		log.Fatalf("file writing failed: %v", err)
 	}
 }

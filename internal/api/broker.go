@@ -149,7 +149,7 @@ func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status string) (*alpac
 func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 	positions, err := broker.client.ListPositions()
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 	return positions
 }

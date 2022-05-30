@@ -1,21 +1,31 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/config"
+	"github.com/HaoxuanXu/MATradingBot/db"
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/internal/channel"
 	"github.com/HaoxuanXu/MATradingBot/strat"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
+	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
 func main() {
+	// read from flag
+	yamlFileName := flag.String("config", "production-paper-account.yml", "this yml config file for the application")
+	flag.Parse()
 
-	var accountType string
-	var serverType string
-	var entryPercent float64
+	yamlConfig := util.ReadYAMLFile(db.MapYAMLConfigPath(*yamlFileName))
+
+	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
+	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
+	entryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%s", yamlConfig["entrypercent"]), 64)
 
 	var totalData model.TotalBarData
 	assets := config.Assets
