@@ -19,7 +19,7 @@ func ReadYAMLFile(path string) map[interface{}]interface{} {
 		log.Fatal(err)
 	}
 	for k, v := range data {
-		log.Printf("%s -> %s\n", k, v)
+		log.Printf("%s -> %v\n", k, v)
 	}
 
 	return data
