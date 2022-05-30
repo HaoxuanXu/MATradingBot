@@ -4,12 +4,12 @@ type ChanMap struct {
 	Map map[string](chan bool)
 }
 
-func CreateMap(assets []string) *ChanMap {
+func CreateMap(assets []string) ChanMap {
 	var resultMap ChanMap
 	for _, asset := range assets {
 		resultMap.Map[asset] = make(chan bool)
 	}
-	return &resultMap
+	return resultMap
 }
 
 func (chanMap *ChanMap) TriggerWorkers() {
