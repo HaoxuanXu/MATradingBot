@@ -21,7 +21,8 @@ func main() {
 	yamlFileName := flag.String("config", "production-paper-account.yml", "this yml config file for the application")
 	flag.Parse()
 
-	yamlConfig := util.ReadYAMLFile(db.MapYAMLConfigPath(*yamlFileName))
+	yamlConfig := make(map[string]interface{})
+	yamlConfig = util.ReadYAMLFile(db.MapYAMLConfigPath(*yamlFileName))
 
 	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
 	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
