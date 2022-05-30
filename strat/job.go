@@ -14,7 +14,7 @@ import (
 
 func MATradingStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, channel chan bool) {
 	broker := api.GetBroker(accountType, serverType)
-	dataModel := model.GetDataModel(symbol, 30)
+	dataModel := model.GetDataModel(symbol, 20)
 	transaction.ReadModelFromDB(dataModel)
 	entryAmount := broker.Cash * entryPercent
 
