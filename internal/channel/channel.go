@@ -5,7 +5,9 @@ type ChanMap struct {
 }
 
 func CreateMap(assets []string) ChanMap {
-	var resultMap ChanMap
+	resultMap := ChanMap{
+		Map: make(map[string]chan bool),
+	}
 	for _, asset := range assets {
 		resultMap.Map[asset] = make(chan bool)
 	}
