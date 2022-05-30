@@ -24,15 +24,16 @@ func main() {
 
 	yamlConfig := util.ReadYAMLFile(db.MapYAMLConfigPath(*yamlFileName))
 
+	var totalData model.TotalBarData
+	assets := config.Assets
+
 	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
 	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
-	entryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%s", yamlConfig["entrypercent"]), 64)
+	totalEntryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%s", yamlConfig["entrypercent"]), 64)
+	workerEntryPercent := totalEntryPercent / float64(len(assets))
 
 	// set up logging
 	logFile := logging.SetLogging()
-
-	var totalData model.TotalBarData
-	assets := config.Assets
 
 	dataEngine := api.GetDataEngine(accountType, serverType)
 	broker := api.GetBroker(accountType, serverType)
@@ -43,7 +44,7 @@ func main() {
 	// start workers
 	for _, asset := range assets {
 		log.Printf("Starting worker for %s trading\n", asset)
-		go strat.MATradingStrategy(asset, accountType, serverType, entryPercent, &totalData, chanMap.Map[asset])
+		go strat.MATradingStrategy(asset, accountType, serverType, workerEntryPercent, &totalData, chanMap.Map[asset])
 	}
 
 	if !broker.Clock.IsOpen {
