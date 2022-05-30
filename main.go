@@ -11,6 +11,7 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/db"
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/internal/channel"
+	"github.com/HaoxuanXu/MATradingBot/internal/logging"
 	"github.com/HaoxuanXu/MATradingBot/strat"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/HaoxuanXu/MATradingBot/util"
@@ -26,6 +27,9 @@ func main() {
 	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
 	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
 	entryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%s", yamlConfig["entrypercent"]), 64)
+
+	// set up logging
+	logFile := logging.SetLogging()
 
 	var totalData model.TotalBarData
 	assets := config.Assets
@@ -59,4 +63,5 @@ func main() {
 	chanMap.CloseWorkers()
 	log.Println("Closing channels...")
 	chanMap.CloseChannels()
+	logFile.Close()
 }
