@@ -2,6 +2,7 @@ package strat
 
 import (
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
@@ -19,6 +20,9 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 	entryAmount := broker.Cash * entryPercent
 
 	for <-channel {
+		// Sleep for a random seconds between 0 and 10 seconds
+		rand.Seed(time.Now().UnixNano())
+		time.Sleep(time.Duration(rand.Intn(10)) * time.Minute)
 
 		dataprocessor.ProcessBarData(dataModel, totalData)
 		pipeline.RefreshDataModel(dataModel, broker)
