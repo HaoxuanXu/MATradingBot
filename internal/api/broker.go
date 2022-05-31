@@ -38,29 +38,29 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string) {
 	broker.Cash = broker.account.Cash.InexactFloat64()
 }
 
-func (broker *AlpacaBroker) RefreshOrderStatus(orderID string) *alpaca.Order {
-	newOrder, _ := broker.client.GetOrder(orderID)
+func (broker *AlpacaBroker) RefreshOrderStatus(orderID string) (*alpaca.Order, error) {
+	newOrder, err := broker.client.GetOrder(orderID)
 
-	return newOrder
+	return newOrder, err
 }
 
 func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 	finished := false
 	orderID := order.ID
-	order = broker.RefreshOrderStatus(orderID)
+	order, _ = broker.RefreshOrderStatus(orderID)
 	if order.Type == alpaca.Market {
 		for !finished {
 			switch order.Status {
 			case "new", "accepted", "partially_filled":
 				time.Sleep(time.Second)
-				order = broker.RefreshOrderStatus(orderID)
+				order, _ = broker.RefreshOrderStatus(orderID)
 			case "filled":
 				finished = true
 			case "done_for_day", "canceled", "expired", "replaced":
 				finished = true
 			default:
 				time.Sleep(time.Second)
-				order = broker.RefreshOrderStatus(orderID)
+				order, _ = broker.RefreshOrderStatus(orderID)
 			}
 		}
 	} else if order.Type == alpaca.TrailingStop {
@@ -68,14 +68,14 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 			switch order.Status {
 			case "accepted", "partially_filled":
 				time.Sleep(time.Second)
-				order = broker.RefreshOrderStatus(orderID)
+				order, _ = broker.RefreshOrderStatus(orderID)
 			case "new":
 				finished = true
 			case "done_for_day", "canceled", "expired", "replaced":
 				finished = true
 			default:
 				time.Sleep(time.Second)
-				order = broker.RefreshOrderStatus(orderID)
+				order, _ = broker.RefreshOrderStatus(orderID)
 			}
 		}
 	}
