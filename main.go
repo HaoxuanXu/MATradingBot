@@ -14,6 +14,7 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/internal/logging"
 	"github.com/HaoxuanXu/MATradingBot/strat"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
+	"github.com/HaoxuanXu/MATradingBot/strat/tools"
 	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
@@ -56,6 +57,9 @@ func main() {
 	log.Println("Start main loop...")
 	for broker.Clock.IsOpen {
 		totalData.Data = dataEngine.GetMultiBars(1, assets)
+		for key := range totalData.Data {
+			totalData.Data[key] = tools.Reverse(totalData.Data[key])
+		}
 		log.Println(totalData.Data["AAPL"][:20])
 		chanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
