@@ -56,6 +56,7 @@ func main() {
 	log.Println("Start main loop...")
 	for broker.Clock.IsOpen {
 		totalData.Data = dataEngine.GetMultiBars(1, assets)
+		log.Println(totalData.Data["AAPL"][:20])
 		chanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
 	}

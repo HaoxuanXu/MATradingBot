@@ -60,9 +60,9 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 			model.Trails.ShortHWM = currentBar.Low
 		}
 	}
-	log.Printf("%s long hwm: %.2f; short hwm: %.2f; current high: %.2f; current low: %.2f; long trail: %.2f; short trail: %.2f\n",
-		model.Symbol, model.Trails.LongHWM, model.Trails.ShortHWM, currentBar.High,
-		currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate)
+	// log.Printf("%s long hwm: %.2f; short hwm: %.2f; current high: %.2f; current low: %.2f; long trail: %.2f; short trail: %.2f\n",
+	// 	model.Symbol, model.Trails.LongHWM, model.Trails.ShortHWM, currentBar.High,
+	// 	currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate)
 
 	if len(model.Trails.LongTrailArray) >= model.Trails.ArrayLength {
 		model.Trails.AppliedLongTrail, _ = stats.Percentile(model.Trails.LongTrailArray, 95.0)
