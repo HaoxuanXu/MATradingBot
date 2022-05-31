@@ -41,6 +41,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 			if model.Trails.LongTrailCandidate > 0 {
 				model.Trails.LongTrailArray = append(model.Trails.LongTrailArray, model.Trails.LongTrailCandidate)
 				model.Trails.LongTrailArray = util.ResizeFloatArray(model.Trails.LongTrailArray, model.Trails.ArrayLength)
+				log.Printf("%s trails data appended\n", model.Symbol)
 			}
 			model.Trails.LongTrailCandidate = 0.0
 			model.Trails.HWM = currentBar.High
@@ -52,6 +53,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 			if model.Trails.ShortTrailCandidate > 0 {
 				model.Trails.ShortTrailArray = append(model.Trails.ShortTrailArray, model.Trails.ShortTrailCandidate)
 				model.Trails.ShortTrailArray = util.ResizeFloatArray(model.Trails.ShortTrailArray, model.Trails.ArrayLength)
+				log.Printf("%s trails data appended\n", model.Symbol)
 			}
 			model.Trails.ShortTrailCandidate = 0.0
 			model.Trails.HWM = currentBar.Low
