@@ -61,7 +61,7 @@ func main() {
 			totalData.Data[key] = tools.Reverse(totalData.Data[key])
 		}
 		chanMap.TriggerWorkers()
-		time.Sleep(2 * time.Minute)
+		time.Sleep(time.Minute)
 	}
 	// close operation when the market is closed
 	log.Println("Shutting down workers...")
