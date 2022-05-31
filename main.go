@@ -30,7 +30,7 @@ func main() {
 
 	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
 	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
-	totalEntryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%s", yamlConfig["entrypercent"]), 64)
+	totalEntryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%v", yamlConfig["entrypercent"]), 64)
 	workerEntryPercent := totalEntryPercent / float64(len(assets))
 	log.Println(totalEntryPercent)
 
