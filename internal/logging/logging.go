@@ -15,7 +15,7 @@ func SetLogging() *os.File {
 
 	logName := fmt.Sprintf("%d-%d-%d-trading-bot.log", dt.Year(), dt.Month(), dt.Day())
 	fullLogPath := string(db.LOGPATH) + logName
-	monitorLogPath := string(db.MONITORPATH) + logName
+	monitorLogPath := string(db.MONITORPATH) + "trading-bot.log"
 
 	logFile, err := os.OpenFile(fullLogPath, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
