@@ -26,7 +26,7 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 		pipeline.RefreshDataModel(dataModel, broker)
 		transaction.RecordExitTransaction(dataModel)
 
-		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAClose))
+		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAAsk))
 		if signalcatcher.CanEnterLong(dataModel, broker) {
 			pipeline.EnterLongPosition(dataModel, broker, qty)
 		} else if signalcatcher.CanEnterShort(dataModel, broker) {

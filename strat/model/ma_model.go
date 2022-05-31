@@ -43,10 +43,9 @@ type TrailData struct {
 type MABarCloseData struct {
 	MASupport     float64
 	MAResistance  float64
-	CurrMAClose   float64
-	PrevMAClose   float64
+	CurrMABid     float64
+	CurrMAAsk     float64
 	CurrMA20Close float64
-	PrevMA20Close float64
 }
 
 type PositionData struct {

@@ -136,14 +136,14 @@ func (broker *AlpacaBroker) ChangeOrderTrail(order *alpaca.Order, newTrail float
 	return finalOrder
 }
 
-func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status string) (*alpaca.Order, error) {
-	limit := 100
+func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status, orderType string) (*alpaca.Order, error) {
+	limit := 1
 	nested := false
 	until := time.Now()
 	orderList, err := broker.client.ListOrders(&status, &until, &limit, &nested)
 
 	for _, order := range orderList {
-		if order.Symbol == symbol && order.Status == "new" {
+		if order.Symbol == symbol && order.Type == alpaca.OrderType(orderType) {
 			return &order, err
 		}
 	}

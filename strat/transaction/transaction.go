@@ -32,13 +32,13 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 		model.Position.HasShortPosition = false
 		model.Position.HasOrder = false
 	} else {
-		order, _ := broker.RetrieveOrderIfExists(model.Symbol, "filled")
-		model.Position.MarketOrder = *order
+		marketOrder, _ := broker.RetrieveOrderIfExists(model.Symbol, "filled", "market")
+		model.Position.MarketOrder = *marketOrder
 		model.Position.HasOrder = true
-		model.Position.CurrentTrail = order.TrailPrice.Abs().InexactFloat64()
-		model.Position.FilledPrice = order.FilledAvgPrice.Abs().InexactFloat64()
-		model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
-		if order.Side == alpaca.Sell {
+		model.Position.CurrentTrail = marketOrder.TrailPrice.Abs().InexactFloat64()
+		model.Position.FilledPrice = marketOrder.FilledAvgPrice.Abs().InexactFloat64()
+		model.Position.FilledQuantity = marketOrder.FilledQty.Abs().InexactFloat64()
+		if marketOrder.Side == alpaca.Sell {
 			model.Position.HasShortPosition = true
 			model.Position.HasLongPosition = false
 		} else {
