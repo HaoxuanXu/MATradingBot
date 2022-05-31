@@ -24,8 +24,9 @@ func updateClose(model *model.DataModel, data *model.TotalBarData) {
 func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	currentBar := data.Data[model.Symbol][0]
 
-	if model.Trails.HWM == 0.0 {
-		model.Trails.HWM = currentBar.High
+	if model.Trails.LongHWM == 0.0 || model.Trails.ShortHWM == 0.0 {
+		model.Trails.LongHWM = currentBar.High
+		model.Trails.ShortHWM = currentBar.Low
 	}
 
 	if model.CloseData.CurrMAClose > model.CloseData.CurrMA20Close {
@@ -35,32 +36,33 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	}
 
 	if model.CloseData.CurrMAClose > model.CloseData.CurrMA20Close {
-		if currentBar.High < model.Trails.HWM {
-			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.HWM-currentBar.Low)
-		} else if currentBar.High > model.Trails.HWM {
+		if currentBar.High < model.Trails.LongHWM {
+			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.LongHWM-currentBar.Low)
+		} else if currentBar.High > model.Trails.LongHWM {
 			if model.Trails.LongTrailCandidate > 0 {
 				model.Trails.LongTrailArray = append(model.Trails.LongTrailArray, model.Trails.LongTrailCandidate)
 				model.Trails.LongTrailArray = util.ResizeFloatArray(model.Trails.LongTrailArray, model.Trails.ArrayLength)
 				log.Printf("%s trails data appended\n", model.Symbol)
 			}
 			model.Trails.LongTrailCandidate = 0.0
-			model.Trails.HWM = currentBar.High
+			model.Trails.LongHWM = currentBar.High
 		}
 	} else if model.CloseData.CurrMAClose < model.CloseData.CurrMA20Close {
-		if currentBar.Low > model.Trails.HWM {
-			model.Trails.ShortTrailCandidate = math.Max(model.Trails.ShortTrailCandidate, currentBar.High-model.Trails.HWM)
-		} else if currentBar.Low < model.Trails.HWM {
+		if currentBar.Low > model.Trails.ShortHWM {
+			model.Trails.ShortTrailCandidate = math.Max(model.Trails.ShortTrailCandidate, currentBar.High-model.Trails.ShortHWM)
+		} else if currentBar.Low < model.Trails.ShortHWM {
 			if model.Trails.ShortTrailCandidate > 0 {
 				model.Trails.ShortTrailArray = append(model.Trails.ShortTrailArray, model.Trails.ShortTrailCandidate)
 				model.Trails.ShortTrailArray = util.ResizeFloatArray(model.Trails.ShortTrailArray, model.Trails.ArrayLength)
 				log.Printf("%s trails data appended\n", model.Symbol)
 			}
 			model.Trails.ShortTrailCandidate = 0.0
-			model.Trails.HWM = currentBar.Low
+			model.Trails.ShortHWM = currentBar.Low
 		}
 	}
-	log.Printf("%s hwm: %.2f; current high: %.2f; current low: %.2f; long trail: %.2f; short trail: %.2f\n",
-		model.Symbol, model.Trails.HWM, currentBar.High, currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate)
+	log.Printf("%s long hwm: %.2f; short hwm: %.2f; current high: %.2f; current low: %.2f; long trail: %.2f; short trail: %.2f\n",
+		model.Symbol, model.Trails.LongHWM, model.Trails.ShortHWM, currentBar.High,
+		currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate)
 
 	if len(model.Trails.LongTrailArray) >= model.Trails.ArrayLength {
 		model.Trails.AppliedLongTrail, _ = stats.Percentile(model.Trails.LongTrailArray, 95.0)

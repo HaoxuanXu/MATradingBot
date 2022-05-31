@@ -29,7 +29,8 @@ type TotalBarData struct {
 }
 
 type TrailData struct {
-	HWM                 float64
+	LongHWM             float64
+	ShortHWM            float64
 	LongTrailCandidate  float64
 	ShortTrailCandidate float64
 	LongTrailArray      []float64
