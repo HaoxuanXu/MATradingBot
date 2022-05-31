@@ -27,10 +27,15 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 		transaction.RecordExitTransaction(dataModel)
 
 		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAAsk))
+
 		if signalcatcher.CanEnterLong(dataModel, broker) {
 			pipeline.EnterLongPosition(dataModel, broker, qty)
 		} else if signalcatcher.CanEnterShort(dataModel, broker) {
 			pipeline.EnterShortPosition(dataModel, broker, qty)
+		} else if signalcatcher.CanExitLong(dataModel, broker) {
+			pipeline.ExitLongPosition(dataModel, broker)
+		} else if signalcatcher.CanExitShort(dataModel, broker) {
+			pipeline.ExitShortPosition(dataModel, broker)
 		}
 		transaction.WriteModelToDB(dataModel)
 	}

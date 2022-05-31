@@ -1,6 +1,8 @@
 package pipeline
 
 import (
+	"log"
+
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/HaoxuanXu/MATradingBot/strat/transaction"
@@ -22,4 +24,18 @@ func EnterShortPosition(model *model.DataModel, broker *api.AlpacaBroker, qty fl
 	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedShortTrail, model.Symbol, "buy")
 	transaction.UpdatePositionAfterTransaction(model, marketOrder, trailingStopOrder)
 	transaction.RecordEntryTransaction(model)
+}
+
+func ExitLongPosition(model *model.DataModel, broker *api.AlpacaBroker) {
+	err := broker.ClosePosition(model.Symbol)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func ExitShortPosition(model *model.DataModel, broker *api.AlpacaBroker) {
+	err := broker.ClosePosition(model.Symbol)
+	if err != nil {
+		log.Println(err)
+	}
 }

@@ -29,3 +29,21 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	}
 	return false
 }
+
+func CanExitLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
+	if model.Position.HasLongPosition && !model.Position.HasShortPosition &&
+		model.CloseData.CurrMABid > model.Position.FilledPrice &&
+		time.Until(broker.Clock.NextClose) < time.Hour {
+		return true
+	}
+	return false
+}
+
+func CanExitShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
+	if model.Position.HasShortPosition && !model.Position.HasLongPosition &&
+		model.CloseData.CurrMAAsk < model.Position.FilledPrice &&
+		time.Until(broker.Clock.NextClose) < time.Hour {
+		return true
+	}
+	return false
+}
