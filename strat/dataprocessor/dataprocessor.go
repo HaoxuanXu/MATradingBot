@@ -23,6 +23,10 @@ func updateClose(model *model.DataModel, data *model.TotalBarData) {
 func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	currentBar := data.Data[model.Symbol][0]
 
+	if model.Trails.HWM == 0.0 {
+		model.Trails.HWM = currentBar.High
+	}
+
 	if model.CloseData.CurrMAClose > model.CloseData.CurrMA20Close {
 		model.Trails.ShortTrailCandidate = 0.0
 	} else if model.CloseData.CurrMAClose < model.CloseData.CurrMA20Close {
