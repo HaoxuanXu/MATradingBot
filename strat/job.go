@@ -33,10 +33,8 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 			pipeline.EnterLongPosition(dataModel, broker, qty)
 		} else if signalcatcher.CanEnterShort(dataModel, broker) {
 			pipeline.EnterShortPosition(dataModel, broker, qty)
-		} else {
-			time.Sleep(time.Minute)
-			transaction.WriteModelToDB(dataModel)
 		}
+		transaction.WriteModelToDB(dataModel)
 	}
 	log.Printf("%s worker closed", symbol)
 
