@@ -35,7 +35,7 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string) {
 	broker.account, _ = broker.client.GetAccount()
 	clock, _ := broker.client.GetClock()
 	broker.Clock = *clock
-	broker.Cash = broker.account.Cash.InexactFloat64()
+	broker.Cash = broker.account.BuyingPower.InexactFloat64()
 }
 
 func (broker *AlpacaBroker) RefreshOrderStatus(orderID string) (*alpaca.Order, error) {
