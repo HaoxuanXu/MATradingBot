@@ -101,18 +101,18 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 
 }
 
-func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_percent float64, symbol, side string) *alpaca.Order {
+func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, symbol, side string) *alpaca.Order {
 	quantity := decimal.NewFromFloat(qty)
-	trail := decimal.NewFromFloat(trail_percent)
+	trail := decimal.NewFromFloat(trail_price)
 	order, _ := broker.client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
-			AssetKey:     &symbol,
-			AccountID:    broker.account.ID,
-			Qty:          &quantity,
-			Side:         alpaca.Side(side),
-			Type:         alpaca.OrderType(alpaca.TrailingStop),
-			TrailPercent: &trail,
-			TimeInForce:  alpaca.Day,
+			AssetKey:    &symbol,
+			AccountID:   broker.account.ID,
+			Qty:         &quantity,
+			Side:        alpaca.Side(side),
+			Type:        alpaca.OrderType(alpaca.TrailingStop),
+			TrailPrice:  &trail,
+			TimeInForce: alpaca.Day,
 		},
 	)
 	finalOrder := broker.MonitorOrder(order)
