@@ -12,17 +12,15 @@ import (
 )
 
 func updateClose(model *model.DataModel, data *model.TotalBarData) {
-	model.CloseData.CurrMAClose = data.Data[model.Symbol][0].Close
-	model.CloseData.PrevMAClose = data.Data[model.Symbol][1].Close
-	model.CloseData.CurrMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now(), 20)
-	model.CloseData.PrevMA20Close = tools.CalcMovingAverage(data.Data[model.Symbol], time.Now().Add(-time.Minute), 20)
-	model.CloseData.MASupport = tools.CalcSupportResistance(data.Data[model.Symbol], constants.SUPPORT)
-	model.CloseData.MAResistance = tools.CalcSupportResistance(data.Data[model.Symbol], constants.RESISTANCE)
+	model.CloseData.CurrMAClose = data.QuoteData[model.Symbol].AskPrice
+	model.CloseData.CurrMA20Close = tools.CalcMovingAverage(data.BarData[model.Symbol], time.Now(), 20)
+	model.CloseData.PrevMA20Close = tools.CalcMovingAverage(data.BarData[model.Symbol], time.Now().Add(-time.Minute), 20)
+	model.CloseData.MASupport = tools.CalcSupportResistance(data.BarData[model.Symbol], constants.SUPPORT)
+	model.CloseData.MAResistance = tools.CalcSupportResistance(data.BarData[model.Symbol], constants.RESISTANCE)
 }
 
 func updateTrail(model *model.DataModel, data *model.TotalBarData) {
-	currentBar := data.Data[model.Symbol][0]
-
+	currentBar := data.BarData[model.Symbol][0]
 	if model.Trails.LongHWM == 0.0 || model.Trails.ShortHWM == 0.0 {
 		model.Trails.LongHWM = currentBar.High
 		model.Trails.ShortHWM = currentBar.Low

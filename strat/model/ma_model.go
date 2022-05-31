@@ -25,7 +25,8 @@ type DataModel struct {
 }
 
 type TotalBarData struct {
-	Data map[string][]marketdata.Bar
+	BarData   map[string][]marketdata.Bar
+	QuoteData map[string]marketdata.Quote
 }
 
 type TrailData struct {
