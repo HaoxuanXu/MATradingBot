@@ -1,7 +1,6 @@
 package dataprocessor
 
 import (
-	"log"
 	"math"
 	"time"
 
@@ -42,7 +41,6 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 			if model.Trails.LongTrailCandidate > 0 {
 				model.Trails.LongTrailArray = append(model.Trails.LongTrailArray, model.Trails.LongTrailCandidate)
 				model.Trails.LongTrailArray = util.ResizeFloatArray(model.Trails.LongTrailArray, model.Trails.ArrayLength)
-				log.Printf("%s trails data appended\n", model.Symbol)
 			}
 			model.Trails.LongTrailCandidate = 0.0
 			model.Trails.LongHWM = currentBar.High
@@ -54,15 +52,14 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 			if model.Trails.ShortTrailCandidate > 0 {
 				model.Trails.ShortTrailArray = append(model.Trails.ShortTrailArray, model.Trails.ShortTrailCandidate)
 				model.Trails.ShortTrailArray = util.ResizeFloatArray(model.Trails.ShortTrailArray, model.Trails.ArrayLength)
-				log.Printf("%s trails data appended\n", model.Symbol)
 			}
 			model.Trails.ShortTrailCandidate = 0.0
 			model.Trails.ShortHWM = currentBar.Low
 		}
 	}
-	log.Printf("%s long hwm: %.2f; short hwm: %.2f; current high: %.2f; current low: %.2f; long trail: %.2f; short trail: %.2f; timestamp: %s\n",
-		model.Symbol, model.Trails.LongHWM, model.Trails.ShortHWM, currentBar.High,
-		currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate, currentBar.Timestamp.String())
+	// log.Printf("%s long hwm: %.2f; short hwm: %.2f; current high: %.2f; current low: %.2f; long trail: %.2f; short trail: %.2f; timestamp: %s\n",
+	// 	model.Symbol, model.Trails.LongHWM, model.Trails.ShortHWM, currentBar.High,
+	// 	currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate, currentBar.Timestamp.String())
 
 	if len(model.Trails.LongTrailArray) >= model.Trails.ArrayLength {
 		model.Trails.AppliedLongTrail, _ = stats.Percentile(model.Trails.LongTrailArray, 95.0)
