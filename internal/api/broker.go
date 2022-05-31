@@ -157,7 +157,6 @@ func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 func (broker *AlpacaBroker) GetPosition(symbol string) (*alpaca.Position, error) {
 	position, err := broker.client.GetPosition(symbol)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	return position, nil
