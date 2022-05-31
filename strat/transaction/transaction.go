@@ -29,9 +29,11 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 		model.Position.CurrentTrail = 0.0
 		model.Position.HasLongPosition = false
 		model.Position.HasShortPosition = false
+		model.Position.HasOrder = false
 	} else {
 		order, _ := broker.RetrieveOrderIfExists(model.Symbol, "new")
 		model.Position.Order = *order
+		model.Position.HasOrder = true
 		model.Position.CurrentTrail = order.TrailPrice.Abs().InexactFloat64()
 		model.Position.FilledPrice = order.FilledAvgPrice.Abs().InexactFloat64()
 		model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
@@ -54,7 +56,8 @@ func RecordEntryTransaction(model *model.DataModel) {
 }
 
 func RecordExitTransaction(model *model.DataModel) {
-	if !model.Position.HasShortPosition && !model.Position.HasLongPosition {
+	if !model.Position.HasShortPosition && !model.Position.HasLongPosition &&
+		model.Position.HasOrder {
 		log.Printf("result: $%.2f\n",
 			model.Position.Order.FilledQty.Abs().InexactFloat64()*model.Position.Order.FilledAvgPrice.Abs().InexactFloat64()-
 				model.Position.FilledPrice*model.Position.FilledQuantity)

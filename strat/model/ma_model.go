@@ -13,6 +13,7 @@ func GetDataModel(symbol string, trailsLength int) *DataModel {
 		Symbol: symbol,
 	}
 	model.Trails.ArrayLength = trailsLength
+	model.Position.Order = alpaca.Order{}
 	return &model
 }
 
@@ -49,6 +50,7 @@ type MABarCloseData struct {
 
 type PositionData struct {
 	Order            alpaca.Order
+	HasOrder         bool
 	HasLongPosition  bool
 	HasShortPosition bool
 	FilledQuantity   float64
