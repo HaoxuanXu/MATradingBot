@@ -115,6 +115,7 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 			TimeInForce: alpaca.Day,
 		},
 	)
+	log.Println(order)
 	finalOrder := broker.MonitorOrder(order)
 	return finalOrder
 }
