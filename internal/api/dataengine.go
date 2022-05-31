@@ -36,6 +36,7 @@ func (engine *MarketDataEngine) GetMultiBars(timeframe int, assets []string) map
 		Adjustment: marketdata.Adjustment(marketdata.Raw),
 		Start:      util.GetStartTime(time.Now(), 1),
 		End:        time.Now(),
+		Feed:       "sip",
 	})
 	if err != nil {
 		log.Println(err)
