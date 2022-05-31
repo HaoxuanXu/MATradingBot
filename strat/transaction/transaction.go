@@ -26,9 +26,6 @@ func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order)
 func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) {
 	position, _ := broker.GetPosition(model.Symbol)
 	if position == nil {
-		order, err := broker.RefreshOrderStatus(model.Position.Order.ID)
-		log.Println(err)
-		model.Position.Order = *order
 		model.Position.CurrentTrail = 0.0
 		model.Position.HasLongPosition = false
 		model.Position.HasShortPosition = false
