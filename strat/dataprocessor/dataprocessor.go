@@ -37,8 +37,10 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 		if currentBar.High < model.Trails.HWM {
 			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.HWM-currentBar.Low)
 		} else if currentBar.High > model.Trails.HWM {
-			model.Trails.LongTrailArray = append(model.Trails.LongTrailArray, model.Trails.LongTrailCandidate)
-			model.Trails.LongTrailArray = util.ResizeFloatArray(model.Trails.LongTrailArray, model.Trails.ArrayLength)
+			if model.Trails.LongTrailCandidate > 0 {
+				model.Trails.LongTrailArray = append(model.Trails.LongTrailArray, model.Trails.LongTrailCandidate)
+				model.Trails.LongTrailArray = util.ResizeFloatArray(model.Trails.LongTrailArray, model.Trails.ArrayLength)
+			}
 			model.Trails.LongTrailCandidate = 0.0
 			model.Trails.HWM = currentBar.High
 		}
@@ -46,8 +48,10 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 		if currentBar.Low > model.Trails.HWM {
 			model.Trails.ShortTrailCandidate = math.Max(model.Trails.ShortTrailCandidate, currentBar.High-model.Trails.HWM)
 		} else if currentBar.Low < model.Trails.HWM {
-			model.Trails.ShortTrailArray = append(model.Trails.ShortTrailArray, model.Trails.ShortTrailCandidate)
-			model.Trails.ShortTrailArray = util.ResizeFloatArray(model.Trails.ShortTrailArray, model.Trails.ArrayLength)
+			if model.Trails.ShortTrailCandidate > 0 {
+				model.Trails.ShortTrailArray = append(model.Trails.ShortTrailArray, model.Trails.ShortTrailCandidate)
+				model.Trails.ShortTrailArray = util.ResizeFloatArray(model.Trails.ShortTrailArray, model.Trails.ArrayLength)
+			}
 			model.Trails.ShortTrailCandidate = 0.0
 			model.Trails.HWM = currentBar.Low
 		}
