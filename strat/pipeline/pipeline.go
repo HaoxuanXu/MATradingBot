@@ -11,13 +11,15 @@ func RefreshDataModel(model *model.DataModel, broker *api.AlpacaBroker) {
 }
 
 func EnterLongPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
-	order := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedLongTrail, model.Symbol, "buy")
-	transaction.UpdatePositionAfterTransaction(model, order)
+	marketOrder := broker.SubmitMarketOrder(qty, model.Symbol, "buy", "gtc")
+	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedLongTrail, model.Symbol, "sell")
+	transaction.UpdatePositionAfterTransaction(model, marketOrder, trailingStopOrder)
 	transaction.RecordEntryTransaction(model)
 }
 
 func EnterShortPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
-	order := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedShortTrail, model.Symbol, "sell")
-	transaction.UpdatePositionAfterTransaction(model, order)
+	marketOrder := broker.SubmitMarketOrder(qty, model.Symbol, "sell", "gtc")
+	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedShortTrail, model.Symbol, "buy")
+	transaction.UpdatePositionAfterTransaction(model, marketOrder, trailingStopOrder)
 	transaction.RecordEntryTransaction(model)
 }

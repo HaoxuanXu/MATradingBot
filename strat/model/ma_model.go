@@ -13,7 +13,6 @@ func GetDataModel(symbol string, trailsLength int) *DataModel {
 		Symbol: symbol,
 	}
 	model.Trails.ArrayLength = trailsLength
-	model.Position.Order = alpaca.Order{}
 	return &model
 }
 
@@ -51,13 +50,14 @@ type MABarCloseData struct {
 }
 
 type PositionData struct {
-	Order            alpaca.Order
-	HasOrder         bool
-	HasLongPosition  bool
-	HasShortPosition bool
-	FilledQuantity   float64
-	FilledPrice      float64
-	CurrentTrail     float64
+	MarketOrder       alpaca.Order
+	TrailingStopOrder alpaca.Order
+	HasOrder          bool
+	HasLongPosition   bool
+	HasShortPosition  bool
+	FilledQuantity    float64
+	FilledPrice       float64
+	CurrentTrail      float64
 }
 
 func (position *PositionData) GetPosition(symbol string, broker *api.AlpacaBroker) {

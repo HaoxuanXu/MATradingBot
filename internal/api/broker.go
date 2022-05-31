@@ -112,7 +112,7 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 			Side:        alpaca.Side(side),
 			Type:        alpaca.OrderType(alpaca.TrailingStop),
 			TrailPrice:  &trail,
-			TimeInForce: alpaca.Day,
+			TimeInForce: alpaca.GTC,
 		},
 	)
 	if err != nil {

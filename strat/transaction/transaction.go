@@ -9,12 +9,13 @@ import (
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
-func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order) {
-	model.Position.Order = *order
-	model.Position.CurrentTrail = order.TrailPrice.InexactFloat64()
-	model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
-	model.Position.FilledPrice = order.FilledAvgPrice.InexactFloat64()
-	if order.Side == alpaca.Sell {
+func UpdatePositionAfterTransaction(model *model.DataModel, marketOrder, trailingStopOrder *alpaca.Order) {
+	model.Position.MarketOrder = *marketOrder
+	model.Position.TrailingStopOrder = *trailingStopOrder
+	model.Position.CurrentTrail = marketOrder.TrailPrice.InexactFloat64()
+	model.Position.FilledQuantity = marketOrder.FilledQty.Abs().InexactFloat64()
+	model.Position.FilledPrice = marketOrder.FilledAvgPrice.InexactFloat64()
+	if marketOrder.Side == alpaca.Sell {
 		model.Position.HasShortPosition = true
 		model.Position.HasLongPosition = false
 	} else {
@@ -31,8 +32,8 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 		model.Position.HasShortPosition = false
 		model.Position.HasOrder = false
 	} else {
-		order, _ := broker.RetrieveOrderIfExists(model.Symbol, "new")
-		model.Position.Order = *order
+		order, _ := broker.RetrieveOrderIfExists(model.Symbol, "filled")
+		model.Position.MarketOrder = *order
 		model.Position.HasOrder = true
 		model.Position.CurrentTrail = order.TrailPrice.Abs().InexactFloat64()
 		model.Position.FilledPrice = order.FilledAvgPrice.Abs().InexactFloat64()
@@ -59,7 +60,7 @@ func RecordExitTransaction(model *model.DataModel) {
 	if !model.Position.HasShortPosition && !model.Position.HasLongPosition &&
 		model.Position.HasOrder {
 		log.Printf("result: $%.2f\n",
-			model.Position.Order.FilledQty.Abs().InexactFloat64()*model.Position.Order.FilledAvgPrice.Abs().InexactFloat64()-
+			model.Position.MarketOrder.FilledQty.Abs().InexactFloat64()*model.Position.MarketOrder.FilledAvgPrice.Abs().InexactFloat64()-
 				model.Position.FilledPrice*model.Position.FilledQuantity)
 	}
 }
