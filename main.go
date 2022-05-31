@@ -60,7 +60,6 @@ func main() {
 		for key := range totalData.Data {
 			totalData.Data[key] = tools.Reverse(totalData.Data[key])
 		}
-		log.Println(totalData.Data["AAPL"][:20])
 		chanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
 	}
