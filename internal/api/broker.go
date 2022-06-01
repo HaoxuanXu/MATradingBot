@@ -172,11 +172,20 @@ func (broker *AlpacaBroker) ClosePosition(symbol string) error {
 	if position == nil && err != nil {
 		log.Printf("The %s position has already been closed.\n", symbol)
 		return err
+	} else {
+		err = broker.client.ClosePosition(symbol)
+		if err != nil {
+			log.Printf("An error has occurred: %s", err)
+			return err
+		}
+		// close open trailing order
+		trailingStopOrder, _ := broker.RetrieveOrderIfExists(symbol, "new", "trailing_stop")
+		err = broker.client.CancelOrder(trailingStopOrder.ID)
+		if err != nil {
+			log.Printf("An error has occurred: %s", err)
+			return err
+		}
 	}
-	err = broker.client.ClosePosition(symbol)
-	if err != nil {
-		log.Printf("An error has occurred: %s", err)
-		return err
-	}
+
 	return nil
 }
