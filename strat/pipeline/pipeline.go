@@ -2,7 +2,6 @@ package pipeline
 
 import (
 	"log"
-	"math"
 
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
@@ -15,16 +14,14 @@ func RefreshDataModel(model *model.DataModel, broker *api.AlpacaBroker) {
 
 func EnterLongPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
 	marketOrder := broker.SubmitMarketOrder(qty, model.Symbol, "buy", "gtc")
-	trail_price := math.Max(model.Trails.AppliedLongTrail, model.CloseData.CurrMAAsk*0.0015)
-	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, trail_price, model.Symbol, "sell")
+	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedLongTrail, model.Symbol, "sell")
 	transaction.UpdatePositionAfterTransaction(model, marketOrder, trailingStopOrder)
 	transaction.RecordEntryTransaction(model)
 }
 
 func EnterShortPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
 	marketOrder := broker.SubmitMarketOrder(qty, model.Symbol, "sell", "gtc")
-	trail_price := math.Max(model.Trails.AppliedShortTrail, model.CloseData.CurrMABid*0.0015)
-	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, trail_price, model.Symbol, "buy")
+	trailingStopOrder := broker.SubmitTrailingStopOrder(qty, model.Trails.AppliedShortTrail, model.Symbol, "buy")
 	transaction.UpdatePositionAfterTransaction(model, marketOrder, trailingStopOrder)
 	transaction.RecordEntryTransaction(model)
 }
