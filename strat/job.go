@@ -23,7 +23,12 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 	for <-channel {
 
 		dataprocessor.ProcessBarData(dataModel, totalData)
-		pipeline.RefreshDataModel(dataModel, broker)
+
+		if counter > 60 {
+			pipeline.RefreshDataModel(dataModel, broker)
+			transaction.WriteModelToDB(dataModel)
+			counter = 0
+		}
 
 		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAAsk))
 
@@ -37,10 +42,6 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 			pipeline.ExitShortPosition(dataModel, broker)
 		}
 		counter++
-		if counter > 120 {
-			transaction.WriteModelToDB(dataModel)
-			counter = 0
-		}
 
 	}
 	log.Printf("%s worker closed", symbol)
