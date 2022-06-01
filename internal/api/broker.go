@@ -17,14 +17,13 @@ type AlpacaBroker struct {
 	Cash    float64
 }
 
-var generatedBroker *AlpacaBroker
 var lock sync.Mutex
 
 func GetBroker(accountType, serverType string) *AlpacaBroker {
-	if generatedBroker == nil {
-		generatedBroker := &AlpacaBroker{}
-		generatedBroker.initialize(accountType, serverType)
-	}
+
+	generatedBroker := &AlpacaBroker{}
+	generatedBroker.initialize(accountType, serverType)
+
 	return generatedBroker
 }
 
