@@ -9,4 +9,6 @@ var Assets = []string{
 	"AAPL",
 	"FB",
 	"AMC",
+	"DIS",
+	"GOOG",
 }
