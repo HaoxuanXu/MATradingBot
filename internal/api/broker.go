@@ -118,7 +118,6 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(order)
 	finalOrder := broker.MonitorOrder(order)
 	return finalOrder
 }
