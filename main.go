@@ -56,7 +56,10 @@ func main() {
 	// start main loop
 	log.Println("Start main loop...")
 	for broker.Clock.IsOpen {
-		totalData.BarData = dataEngine.GetMultiBars(1, assets)
+		barData := dataEngine.GetMultiBars(1, assets)
+		if len(barData) > 0 {
+			totalData.BarData = barData
+		}
 		totalData.QuoteData = dataEngine.GetLatestMultiQuotes(assets)
 		for key := range totalData.BarData {
 			totalData.BarData[key] = tools.Reverse(totalData.BarData[key])
