@@ -23,7 +23,7 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.CloseData.CurrMABid < model.CloseData.CurrMA20Close &&
 		model.CloseData.CurrMABid < model.CloseData.MASupport &&
-		model.Trails.AppliedShortTrail > 0 &&
+		model.Trails.AppliedShortTrail > model.CloseData.CurrMABid*0.001 &&
 		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
