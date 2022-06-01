@@ -15,7 +15,7 @@ func CalcSupportResistance(barData []marketdata.Bar, metric constants.Metric) fl
 	var err error
 	var barHighPriceData []float64
 	var barLowPriceData []float64
-	inputBarData := GetBarSubArray(barData[1:], time.Now(), 10)
+	inputBarData := GetBarSubArray(barData[1:], time.Now(), 20)
 	for _, bar := range inputBarData {
 		barHighPriceData = append(barHighPriceData, bar.High)
 		barLowPriceData = append(barLowPriceData, bar.Low)

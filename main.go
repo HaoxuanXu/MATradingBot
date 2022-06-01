@@ -55,20 +55,17 @@ func main() {
 
 	// start main loop
 	log.Println("Start main loop...")
-	counter := 0
 	for broker.Clock.IsOpen {
-		if counter%60 == 0 {
-			barData := dataEngine.GetMultiBars(1, assets)
-			if len(barData) > 0 {
-				totalData.BarData = barData
-			}
+		barData := dataEngine.GetMultiBars(1, assets)
+		if len(barData) > 0 {
+			totalData.BarData = barData
 		}
 		totalData.QuoteData = dataEngine.GetLatestMultiQuotes(assets)
 		for key := range totalData.BarData {
 			totalData.BarData[key] = tools.Reverse(totalData.BarData[key])
 		}
 		chanMap.TriggerWorkers()
-		time.Sleep(time.Second)
+		time.Sleep(time.Minute)
 	}
 	// close operation when the market is closed
 	log.Println("Shutting down workers...")
