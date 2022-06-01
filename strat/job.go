@@ -16,6 +16,7 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 	dataModel := model.GetDataModel(symbol, 20)
 	transaction.ReadModelFromDB(dataModel)
 	entryAmount := broker.Cash * entryPercent
+	counter := 0
 
 	for <-channel {
 
@@ -34,7 +35,12 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 		} else if signalcatcher.CanExitShort(dataModel, broker) {
 			pipeline.ExitShortPosition(dataModel, broker)
 		}
-		transaction.WriteModelToDB(dataModel)
+		counter++
+		if counter > 120 {
+			transaction.WriteModelToDB(dataModel)
+			counter = 0
+		}
+
 	}
 	log.Printf("%s worker closed", symbol)
 
