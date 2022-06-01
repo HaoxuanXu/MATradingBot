@@ -9,9 +9,11 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/strat/pipeline"
 	"github.com/HaoxuanXu/MATradingBot/strat/signalcatcher"
 	"github.com/HaoxuanXu/MATradingBot/strat/transaction"
+	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
 func MATradingStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, channel chan bool) {
+	defer util.HandlePanic()
 	broker := api.GetBroker(accountType, serverType)
 	dataModel := model.GetDataModel(symbol, 20)
 	transaction.ReadModelFromDB(dataModel)

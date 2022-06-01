@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"sync"
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/config"
@@ -16,10 +17,14 @@ type AlpacaBroker struct {
 	Cash    float64
 }
 
-func GetBroker(accountType, serverType string) *AlpacaBroker {
-	generatedBroker := &AlpacaBroker{}
-	generatedBroker.initialize(accountType, serverType)
+var generatedBroker *AlpacaBroker
+var lock sync.Mutex
 
+func GetBroker(accountType, serverType string) *AlpacaBroker {
+	if generatedBroker == nil {
+		generatedBroker := &AlpacaBroker{}
+		generatedBroker.initialize(accountType, serverType)
+	}
 	return generatedBroker
 }
 
@@ -84,6 +89,8 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 }
 
 func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInForce string) *alpaca.Order {
+	defer lock.Unlock()
+	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
 	order, err := broker.client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
@@ -105,6 +112,8 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 }
 
 func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, symbol, side string) *alpaca.Order {
+	defer lock.Unlock()
+	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
 	trail := decimal.NewFromFloat(trail_price)
 	order, err := broker.client.PlaceOrder(
