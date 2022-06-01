@@ -12,7 +12,7 @@ import (
 func UpdatePositionAfterTransaction(model *model.DataModel, marketOrder, trailingStopOrder *alpaca.Order) {
 	model.Position.MarketOrder = *marketOrder
 	model.Position.TrailingStopOrder = *trailingStopOrder
-	model.Position.CurrentTrail = marketOrder.TrailPrice.InexactFloat64()
+	model.Position.CurrentTrail = trailingStopOrder.TrailPrice.InexactFloat64()
 	model.Position.FilledQuantity = marketOrder.FilledQty.Abs().InexactFloat64()
 	model.Position.FilledPrice = marketOrder.FilledAvgPrice.InexactFloat64()
 	if marketOrder.Side == alpaca.Sell {
