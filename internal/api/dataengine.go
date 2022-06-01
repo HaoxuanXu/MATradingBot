@@ -15,10 +15,10 @@ type MarketDataEngine struct {
 
 func GetDataEngine(accountType, serverType string) *MarketDataEngine {
 
-	engine := &MarketDataEngine{}
+	engine := MarketDataEngine{}
 	engine.initialize(accountType, serverType)
 
-	return engine
+	return &engine
 }
 
 func (engine *MarketDataEngine) initialize(accountType, serverType string) {

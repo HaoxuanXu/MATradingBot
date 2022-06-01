@@ -23,12 +23,12 @@ func CalcSupportResistance(barData []marketdata.Bar, metric constants.Metric) fl
 	if metric == constants.SUPPORT {
 		result, err = stats.Min(barLowPriceData)
 		if err != nil {
-			log.Fatalf("support level calculation failed: %v", err)
+			log.Printf("support level calculation failed: %v\n", err)
 		}
 	} else if metric == constants.RESISTANCE {
 		result, err = stats.Max(barHighPriceData)
 		if err != nil {
-			log.Fatalf("resistance level calculation failed: %v", err)
+			log.Printf("resistance level calculation failed: %v", err)
 		}
 	}
 	return result
