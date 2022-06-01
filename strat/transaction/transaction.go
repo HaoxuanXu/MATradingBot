@@ -69,8 +69,7 @@ func RecordEntryTransaction(model *model.DataModel) {
 }
 
 func RecordExitTransaction(model *model.DataModel) {
-	if !model.Position.HasShortPosition && !model.Position.HasLongPosition &&
-		model.Position.HasOrder {
+	if !model.Position.HasShortPosition && !model.Position.HasLongPosition {
 		log.Printf("result: $%.2f\n",
 			model.Position.MarketOrder.FilledQty.Abs().InexactFloat64()*model.Position.MarketOrder.FilledAvgPrice.Abs().InexactFloat64()-
 				model.Position.FilledPrice*model.Position.FilledQuantity)
