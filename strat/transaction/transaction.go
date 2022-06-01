@@ -25,7 +25,10 @@ func UpdatePositionAfterTransaction(model *model.DataModel, marketOrder, trailin
 }
 
 func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) {
-	position, _ := broker.GetPosition(model.Symbol)
+	position, err := broker.GetPosition(model.Symbol)
+	if err != nil {
+		log.Println(err)
+	}
 	if position == nil {
 		model.Position.CurrentTrail = 0.0
 		model.Position.HasLongPosition = false

@@ -171,6 +171,8 @@ func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 }
 
 func (broker *AlpacaBroker) GetPosition(symbol string) (*alpaca.Position, error) {
+	lock.Lock()
+	defer lock.Unlock()
 	position, err := broker.client.GetPosition(symbol)
 	if err != nil {
 		return nil, err
@@ -179,6 +181,8 @@ func (broker *AlpacaBroker) GetPosition(symbol string) (*alpaca.Position, error)
 }
 
 func (broker *AlpacaBroker) ClosePosition(symbol string) error {
+	lock.Lock()
+	defer lock.Unlock()
 	// Check if the position has already been closed or not
 	position, err := broker.GetPosition(symbol)
 	if position == nil && err != nil {
