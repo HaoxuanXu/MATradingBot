@@ -32,9 +32,20 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 		model.Position.HasShortPosition = false
 		model.Position.HasOrder = false
 	} else {
-		marketOrder, _ := broker.RetrieveOrderIfExists(model.Symbol, "filled", "market")
-		trailingStopOrder, _ := broker.RetrieveOrderIfExists(model.Symbol, "open", "trailing_stop")
-		model.Position.MarketOrder = *marketOrder
+		marketOrder, err := broker.RetrieveOrderIfExists(model.Symbol, "filled", "market")
+		if err != nil {
+			log.Println(err)
+		}
+		trailingStopOrder, err := broker.RetrieveOrderIfExists(model.Symbol, "open", "trailing_stop")
+		if err != nil {
+			log.Println(err)
+		}
+		if marketOrder != nil {
+			model.Position.MarketOrder = *marketOrder
+		}
+		if trailingStopOrder != nil {
+			model.Position.TrailingStopOrder = *trailingStopOrder
+		}
 		model.Position.HasOrder = true
 		model.Position.CurrentTrail = trailingStopOrder.TrailPrice.Abs().InexactFloat64()
 		model.Position.FilledPrice = marketOrder.FilledAvgPrice.Abs().InexactFloat64()
