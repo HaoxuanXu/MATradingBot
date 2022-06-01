@@ -85,7 +85,7 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 
 func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInForce string) *alpaca.Order {
 	quantity := decimal.NewFromFloat(qty)
-	order, _ := broker.client.PlaceOrder(
+	order, err := broker.client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
 			AssetKey:    &symbol,
 			AccountID:   broker.account.ID,
@@ -95,6 +95,9 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 			TimeInForce: alpaca.TimeInForce(timeInForce),
 		},
 	)
+	if err != nil {
+		log.Println(err)
+	}
 
 	finalOrder := broker.MonitorOrder(order)
 	return finalOrder

@@ -55,10 +55,13 @@ func main() {
 
 	// start main loop
 	log.Println("Start main loop...")
+	counter := 0
 	for broker.Clock.IsOpen {
-		barData := dataEngine.GetMultiBars(1, assets)
-		if len(barData) > 0 {
-			totalData.BarData = barData
+		if counter%60 == 0 {
+			barData := dataEngine.GetMultiBars(1, assets)
+			if len(barData) > 0 {
+				totalData.BarData = barData
+			}
 		}
 		totalData.QuoteData = dataEngine.GetLatestMultiQuotes(assets)
 		for key := range totalData.BarData {
