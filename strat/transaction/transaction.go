@@ -41,22 +41,21 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 			log.Println(err)
 		}
 		if marketOrder != nil {
+			model.Position.HasOrder = true
 			model.Position.MarketOrder = *marketOrder
 			model.Position.FilledPrice = marketOrder.FilledAvgPrice.Abs().InexactFloat64()
 			model.Position.FilledQuantity = marketOrder.FilledQty.Abs().InexactFloat64()
+			if marketOrder.Side == alpaca.Sell {
+				model.Position.HasShortPosition = true
+				model.Position.HasLongPosition = false
+			} else {
+				model.Position.HasShortPosition = false
+				model.Position.HasLongPosition = true
+			}
 		}
 		if trailingStopOrder != nil {
 			model.Position.TrailingStopOrder = *trailingStopOrder
 			model.Position.CurrentTrail = trailingStopOrder.TrailPrice.Abs().InexactFloat64()
-		}
-		model.Position.HasOrder = true
-
-		if marketOrder.Side == alpaca.Sell {
-			model.Position.HasShortPosition = true
-			model.Position.HasLongPosition = false
-		} else {
-			model.Position.HasShortPosition = false
-			model.Position.HasLongPosition = true
 		}
 	}
 }
