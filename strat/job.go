@@ -22,7 +22,6 @@ func MATradingStrategy(symbol, accountType, serverType string, entryPercent floa
 
 		dataprocessor.ProcessBarData(dataModel, totalData)
 		pipeline.RefreshDataModel(dataModel, broker)
-		transaction.RecordExitTransaction(dataModel)
 
 		qty := float64(int(entryAmount / dataModel.CloseData.CurrMAAsk))
 
