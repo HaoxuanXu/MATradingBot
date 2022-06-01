@@ -60,7 +60,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	// 	currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate, currentBar.Timestamp.String())
 
 	if len(model.Trails.LongTrailArray) >= 5 {
-		model.Trails.AppliedLongTrail, _ = stats.Percentile(model.Trails.LongTrailArray, 80.0)
+		model.Trails.AppliedLongTrail, _ = stats.Percentile(model.Trails.LongTrailArray, 95.0)
 	}
 	if len(model.Trails.ShortTrailArray) >= 5 {
 		model.Trails.AppliedShortTrail, _ = stats.Percentile(model.Trails.ShortTrailArray, 95.0)
