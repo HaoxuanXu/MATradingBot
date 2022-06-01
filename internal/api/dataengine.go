@@ -13,13 +13,11 @@ type MarketDataEngine struct {
 	client marketdata.Client
 }
 
-var engine *MarketDataEngine
-
 func GetDataEngine(accountType, serverType string) *MarketDataEngine {
-	if engine == nil {
-		engine := &MarketDataEngine{}
-		engine.initialize(accountType, serverType)
-	}
+
+	engine := &MarketDataEngine{}
+	engine.initialize(accountType, serverType)
+
 	return engine
 }
 
