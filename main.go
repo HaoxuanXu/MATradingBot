@@ -42,15 +42,15 @@ func main() {
 	// create channel map
 	chanMap := channel.CreateMap(assets)
 
+	if !broker.Clock.IsOpen {
+		log.Printf("Wait for %.2f minutes till the market opens\n", time.Until(broker.Clock.NextOpen).Minutes())
+		time.Sleep(time.Until(broker.Clock.NextOpen))
+	}
+
 	// start workers
 	for _, asset := range assets {
 		log.Printf("Starting worker for %s trading\n", asset)
 		go strat.MATradingStrategy(asset, accountType, serverType, workerEntryPercent, &totalData, chanMap.Map[asset])
-	}
-
-	if !broker.Clock.IsOpen {
-		log.Printf("Wait for %.2f minutes till the market opens\n", time.Until(broker.Clock.NextOpen).Minutes())
-		time.Sleep(time.Until(broker.Clock.NextOpen))
 	}
 
 	// start main loop
