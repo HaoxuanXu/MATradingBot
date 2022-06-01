@@ -34,7 +34,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 
 	if model.CloseData.CurrMAAsk > model.CloseData.CurrMA20Close {
 		if model.CloseData.CurrMAAsk < model.Trails.LongHWM {
-			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.LongHWM-currentBar.Low)
+			model.Trails.LongTrailCandidate = math.Max(model.Trails.LongTrailCandidate, model.Trails.LongHWM-model.CloseData.CurrMAAsk)
 		} else if model.CloseData.CurrMAAsk > model.Trails.LongHWM {
 			if model.Trails.LongTrailCandidate > 0 {
 				model.Trails.LongTrailArray = append(model.Trails.LongTrailArray, model.Trails.LongTrailCandidate)
@@ -45,7 +45,7 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 		}
 	} else if model.CloseData.CurrMABid < model.CloseData.CurrMA20Close {
 		if model.CloseData.CurrMABid > model.Trails.ShortHWM {
-			model.Trails.ShortTrailCandidate = math.Max(model.Trails.ShortTrailCandidate, currentBar.High-model.Trails.ShortHWM)
+			model.Trails.ShortTrailCandidate = math.Max(model.Trails.ShortTrailCandidate, model.CloseData.CurrMABid-model.Trails.ShortHWM)
 		} else if model.CloseData.CurrMABid < model.Trails.ShortHWM {
 			if model.Trails.ShortTrailCandidate > 0 {
 				model.Trails.ShortTrailArray = append(model.Trails.ShortTrailArray, model.Trails.ShortTrailCandidate)
