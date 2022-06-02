@@ -63,10 +63,10 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	// 	currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate, currentBar.Timestamp.String())
 
 	if len(model.Trails.LongTrailArray) > 0 {
-		model.Trails.AppliedLongTrail, _ = stats.Max(model.Trails.LongTrailArray)
+		model.Trails.AppliedLongTrail, _ = stats.Mean(model.Trails.LongTrailArray)
 	}
 	if len(model.Trails.ShortTrailArray) >= 0 {
-		model.Trails.AppliedShortTrail, _ = stats.Max(model.Trails.ShortTrailArray)
+		model.Trails.AppliedShortTrail, _ = stats.Mean(model.Trails.ShortTrailArray)
 	}
 
 }
