@@ -61,11 +61,11 @@ func updateTrail(model *model.DataModel, data *model.TotalBarData) {
 	// 	model.Symbol, model.Trails.LongHWM, model.Trails.ShortHWM, currentBar.High,
 	// 	currentBar.Low, model.Trails.LongTrailCandidate, model.Trails.ShortTrailCandidate, currentBar.Timestamp.String())
 
-	if len(model.Trails.LongTrailArray) >= model.Trails.ArrayLength {
-		model.Trails.AppliedLongTrail, _ = stats.Percentile(model.Trails.LongTrailArray, 95.0)
+	if len(model.Trails.LongTrailArray) > 0 {
+		model.Trails.AppliedLongTrail, _ = stats.Max(model.Trails.LongTrailArray)
 	}
-	if len(model.Trails.ShortTrailArray) >= model.Trails.ArrayLength {
-		model.Trails.AppliedShortTrail, _ = stats.Percentile(model.Trails.ShortTrailArray, 95.0)
+	if len(model.Trails.ShortTrailArray) >= 0 {
+		model.Trails.AppliedShortTrail, _ = stats.Max(model.Trails.ShortTrailArray)
 	}
 
 }
