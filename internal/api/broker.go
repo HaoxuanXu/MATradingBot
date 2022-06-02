@@ -11,9 +11,9 @@ import (
 )
 
 type AlpacaBroker struct {
-	client  alpaca.Client
-	account *alpaca.Account
-	Clock   alpaca.Clock
+	Client  alpaca.Client
+	Account *alpaca.Account
+	Clock   *alpaca.Clock
 	Cash    float64
 }
 
@@ -29,21 +29,21 @@ func GetBroker(accountType, serverType string) *AlpacaBroker {
 
 func (broker *AlpacaBroker) initialize(accountType, serverType string) {
 	cred := config.GetCredentials(accountType, serverType)
-	broker.client = alpaca.NewClient(
+	broker.Client = alpaca.NewClient(
 		alpaca.ClientOpts{
 			ApiKey:    cred.API_KEY,
 			ApiSecret: cred.API_SECRET,
 			BaseURL:   cred.BASE_URL,
 		},
 	)
-	broker.account, _ = broker.client.GetAccount()
-	clock, _ := broker.client.GetClock()
-	broker.Clock = *clock
-	broker.Cash = broker.account.Equity.Abs().InexactFloat64()
+	broker.Account, _ = broker.Client.GetAccount()
+	clock, _ := broker.Client.GetClock()
+	broker.Clock = clock
+	broker.Cash = broker.Account.Equity.Abs().InexactFloat64()
 }
 
 func (broker *AlpacaBroker) RefreshOrderStatus(orderID string) (*alpaca.Order, error) {
-	newOrder, err := broker.client.GetOrder(orderID)
+	newOrder, err := broker.Client.GetOrder(orderID)
 
 	return newOrder, err
 }
@@ -91,10 +91,10 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 	defer lock.Unlock()
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
-	order, err := broker.client.PlaceOrder(
+	order, err := broker.Client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
 			AssetKey:    &symbol,
-			AccountID:   broker.account.ID,
+			AccountID:   broker.Account.ID,
 			Qty:         &quantity,
 			Side:        alpaca.Side(side),
 			Type:        alpaca.OrderType(alpaca.Market),
@@ -115,10 +115,10 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
 	trail := decimal.NewFromFloat(trail_price)
-	order, err := broker.client.PlaceOrder(
+	order, err := broker.Client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
 			AssetKey:    &symbol,
-			AccountID:   broker.account.ID,
+			AccountID:   broker.Account.ID,
 			Qty:         &quantity,
 			Side:        alpaca.Side(side),
 			Type:        alpaca.OrderType(alpaca.TrailingStop),
@@ -136,7 +136,7 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 func (broker *AlpacaBroker) ChangeOrderTrail(order *alpaca.Order, newTrail float64) *alpaca.Order {
 	ordeID := order.ID
 	newTrailDecimal := decimal.NewFromFloat(newTrail)
-	order, _ = broker.client.ReplaceOrder(
+	order, _ = broker.Client.ReplaceOrder(
 		ordeID,
 		alpaca.ReplaceOrderRequest{
 			Trail: &newTrailDecimal,
@@ -152,7 +152,7 @@ func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status, orderType stri
 	limit := 1
 	nested := false
 	until := time.Now()
-	orderList, err := broker.client.ListOrders(&status, &until, &limit, &nested)
+	orderList, err := broker.Client.ListOrders(&status, &until, &limit, &nested)
 
 	for _, order := range orderList {
 		if order.Symbol == symbol && order.Type == alpaca.OrderType(orderType) {
@@ -163,7 +163,7 @@ func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status, orderType stri
 }
 
 func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
-	positions, err := broker.client.ListPositions()
+	positions, err := broker.Client.ListPositions()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -173,7 +173,7 @@ func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 func (broker *AlpacaBroker) GetPosition(symbol string) (*alpaca.Position, error) {
 	lock.Lock()
 	defer lock.Unlock()
-	position, err := broker.client.GetPosition(symbol)
+	position, err := broker.Client.GetPosition(symbol)
 	if err != nil {
 		return nil, err
 	}
@@ -189,14 +189,14 @@ func (broker *AlpacaBroker) ClosePosition(symbol string) error {
 		log.Printf("The %s position has already been closed.\n", symbol)
 		return err
 	} else {
-		err = broker.client.ClosePosition(symbol)
+		err = broker.Client.ClosePosition(symbol)
 		if err != nil {
 			log.Printf("An error has occurred: %s", err)
 			return err
 		}
 		// close open trailing order
 		trailingStopOrder, _ := broker.RetrieveOrderIfExists(symbol, "new", "trailing_stop")
-		err = broker.client.CancelOrder(trailingStopOrder.ID)
+		err = broker.Client.CancelOrder(trailingStopOrder.ID)
 		if err != nil {
 			log.Printf("An error has occurred: %s", err)
 			return err

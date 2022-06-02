@@ -55,6 +55,7 @@ func main() {
 
 	// start main loop
 	log.Println("Start main loop...")
+	broker.Clock, _ = broker.Client.GetClock()
 	for broker.Clock.IsOpen {
 		barData := dataEngine.GetMultiBars(1, assets)
 		if len(barData) > 0 {
