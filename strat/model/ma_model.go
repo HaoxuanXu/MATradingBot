@@ -46,6 +46,7 @@ type MABarCloseData struct {
 	CurrMABid     float64
 	CurrMAAsk     float64
 	CurrMA20Close float64
+	PrevMA20Close float64
 }
 
 type PositionData struct {
