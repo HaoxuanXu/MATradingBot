@@ -16,5 +16,6 @@ func CalcMovingAverage(barData []marketdata.Bar, endTime time.Time, periods int)
 	}
 
 	result, _ := stats.Mean(closeArray)
+	result, _ = stats.Round(result, 3)
 	return result
 }
