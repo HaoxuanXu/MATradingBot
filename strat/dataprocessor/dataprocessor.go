@@ -12,8 +12,13 @@ import (
 )
 
 func updateClose(model *model.DataModel, data *model.TotalBarData) {
-	model.CloseData.CurrMAAsk = data.QuoteData[model.Symbol].AskPrice
-	model.CloseData.CurrMABid = data.QuoteData[model.Symbol].BidPrice
+	if model.CloseData.PrevMATrade == 0.0 {
+		model.CloseData.PrevMATrade = data.TradeData[model.Symbol].Price
+		model.CloseData.CurrMATrade = data.TradeData[model.Symbol].Price
+	} else {
+		model.CloseData.PrevMATrade = model.CloseData.CurrMATrade
+		model.CloseData.CurrMATrade = data.TradeData[model.Symbol].Price
+	}
 	model.CloseData.CurrMA20Close = tools.CalcMovingAverage(data.BarData[model.Symbol], time.Now(), 20)
 	model.CloseData.PrevMA20Close = tools.CalcMovingAverage(data.BarData[model.Symbol], time.Now().Add(-2*time.Minute), 20)
 	model.CloseData.MASupport = tools.CalcSupportResistance(data.BarData[model.Symbol], constants.SUPPORT)

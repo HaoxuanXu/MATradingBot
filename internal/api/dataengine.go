@@ -47,6 +47,14 @@ func (engine *MarketDataEngine) GetMultiBars(timeframe int, assets []string) map
 	return result
 }
 
+func (engine *MarketDataEngine) GetLatestMultiTrades(assets []string) map[string]marketdata.Trade {
+	result, err := engine.client.GetLatestTrades(assets)
+	if err != nil {
+		log.Println(err)
+	}
+	return result
+}
+
 func (engine *MarketDataEngine) GetLatestMultiQuotes(assets []string) map[string]marketdata.Quote {
 	result, err := engine.client.GetLatestQuotes(assets)
 	if err != nil {

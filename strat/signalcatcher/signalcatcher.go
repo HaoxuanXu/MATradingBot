@@ -10,10 +10,11 @@ import (
 // In order to go long, 20MA has to be above  30MA and both MAs have to be rising
 func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.CloseData.CurrMAAsk > model.CloseData.CurrMA20Close &&
-		model.CloseData.CurrMAAsk > model.CloseData.MAResistance &&
+		model.CloseData.CurrMATrade > model.CloseData.CurrMA20Close &&
+		model.CloseData.CurrMATrade > model.CloseData.MAResistance &&
 		model.CloseData.CurrMA20Close > model.CloseData.PrevMA20Close &&
-		model.Trails.AppliedLongTrail > model.CloseData.CurrMAAsk*0.001 &&
+		model.Trails.AppliedLongTrail > model.CloseData.CurrMATrade*0.001 &&
+		model.CloseData.CurrMATrade > model.CloseData.PrevMATrade &&
 		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
@@ -22,10 +23,11 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 
 func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.CloseData.CurrMABid < model.CloseData.CurrMA20Close &&
-		model.CloseData.CurrMABid < model.CloseData.MASupport &&
+		model.CloseData.CurrMATrade < model.CloseData.CurrMA20Close &&
+		model.CloseData.CurrMATrade < model.CloseData.MASupport &&
 		model.CloseData.CurrMA20Close < model.CloseData.PrevMA20Close &&
-		model.Trails.AppliedShortTrail > model.CloseData.CurrMABid*0.001 &&
+		model.Trails.AppliedShortTrail > model.CloseData.CurrMATrade*0.001 &&
+		model.CloseData.CurrMATrade < model.CloseData.PrevMATrade &&
 		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
@@ -34,7 +36,7 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 
 func CanExitLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if model.Position.HasLongPosition && !model.Position.HasShortPosition &&
-		model.CloseData.CurrMABid > model.Position.FilledPrice &&
+		model.CloseData.CurrMATrade > model.Position.FilledPrice &&
 		time.Until(broker.Clock.NextClose) < time.Hour {
 		return true
 	}
@@ -43,7 +45,7 @@ func CanExitLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 
 func CanExitShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if model.Position.HasShortPosition && !model.Position.HasLongPosition &&
-		model.CloseData.CurrMAAsk < model.Position.FilledPrice &&
+		model.CloseData.CurrMATrade < model.Position.FilledPrice &&
 		time.Until(broker.Clock.NextClose) < time.Hour {
 		return true
 	}

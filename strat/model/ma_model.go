@@ -25,7 +25,7 @@ type DataModel struct {
 
 type TotalBarData struct {
 	BarData   map[string][]marketdata.Bar
-	QuoteData map[string]marketdata.Quote
+	TradeData map[string]marketdata.Trade
 }
 
 type TrailData struct {
@@ -43,8 +43,8 @@ type TrailData struct {
 type MABarCloseData struct {
 	MASupport     float64
 	MAResistance  float64
-	CurrMABid     float64
-	CurrMAAsk     float64
+	CurrMATrade   float64
+	PrevMATrade   float64
 	CurrMA20Close float64
 	PrevMA20Close float64
 }

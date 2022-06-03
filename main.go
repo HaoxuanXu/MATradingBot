@@ -56,12 +56,12 @@ func main() {
 	// start main loop
 	log.Println("Start main loop...")
 	broker.Clock, _ = broker.Client.GetClock()
-	for broker.Clock.IsOpen {
+	for time.Until(broker.Clock.NextClose) > 0 {
 		barData := dataEngine.GetMultiBars(1, assets)
 		if len(barData) > 0 {
 			totalData.BarData = barData
 		}
-		totalData.QuoteData = dataEngine.GetLatestMultiQuotes(assets)
+		totalData.TradeData = dataEngine.GetLatestMultiTrades(assets)
 		for key := range totalData.BarData {
 			totalData.BarData[key] = tools.Reverse(totalData.BarData[key])
 		}
