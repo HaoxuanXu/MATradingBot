@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
-	"github.com/HaoxuanXu/MATradingBot/internal/readwrite"
 	"github.com/HaoxuanXu/MATradingBot/strat/model"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
@@ -75,14 +74,4 @@ func RecordExitTransaction(model *model.DataModel) {
 			model.Position.MarketOrder.FilledQty.Abs().InexactFloat64()*model.Position.MarketOrder.FilledAvgPrice.Abs().InexactFloat64()-
 				model.Position.FilledPrice*model.Position.FilledQuantity)
 	}
-}
-
-func ReadModelFromDB(model *model.DataModel) {
-	model.Trails.LongTrailArray = readwrite.ReadFloatArrayToJson(model.Symbol, "long")
-	model.Trails.ShortTrailArray = readwrite.ReadFloatArrayToJson(model.Symbol, "short")
-}
-
-func WriteModelToDB(model *model.DataModel) {
-	readwrite.WriteFloatArrayToJson(model.Trails.LongTrailArray, model.Symbol, "long")
-	readwrite.WriteFloatArrayToJson(model.Trails.ShortTrailArray, model.Symbol, "short")
 }

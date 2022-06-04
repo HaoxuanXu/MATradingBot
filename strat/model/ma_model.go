@@ -8,11 +8,10 @@ import (
 
 // the ma conditions will track if the 15 minutes 20 day ma and 30 day ma is dropping or rising
 
-func GetDataModel(symbol string, trailsLength int) *DataModel {
+func GetDataModel(symbol string) *DataModel {
 	model := DataModel{
 		Symbol: symbol,
 	}
-	model.Trails.ArrayLength = trailsLength
 	return &model
 }
 
@@ -29,15 +28,8 @@ type TotalBarData struct {
 }
 
 type TrailData struct {
-	LongHWM             float64
-	ShortHWM            float64
-	LongTrailCandidate  float64
-	ShortTrailCandidate float64
-	LongTrailArray      []float64
-	ShortTrailArray     []float64
-	ArrayLength         int
-	AppliedLongTrail    float64
-	AppliedShortTrail   float64
+	AppliedLongTrail  float64
+	AppliedShortTrail float64
 }
 
 type MABarCloseData struct {

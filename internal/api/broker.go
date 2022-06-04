@@ -133,6 +133,36 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 	return finalOrder
 }
 
+func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float64, symbol, side string) *alpaca.Order {
+	defer lock.Unlock()
+	lock.Lock()
+	quantity := decimal.NewFromFloat(qty)
+	takeProfitLimitPrice := decimal.NewFromFloat(take_profit)
+	takeLossLimitPrice := decimal.NewFromFloat(take_loss)
+	order, err := broker.Client.PlaceOrder(
+		alpaca.PlaceOrderRequest{
+			AssetKey:   &symbol,
+			AccountID:  broker.Account.ID,
+			Qty:        &quantity,
+			Side:       alpaca.Side(side),
+			OrderClass: alpaca.Bracket,
+			TakeProfit: &alpaca.TakeProfit{
+				LimitPrice: &takeProfitLimitPrice,
+			},
+			StopLoss: &alpaca.StopLoss{
+				LimitPrice: &takeLossLimitPrice,
+				StopPrice:  &takeLossLimitPrice,
+			},
+		},
+	)
+	if err != nil {
+		log.Println(err)
+	}
+	finalOrder := broker.MonitorOrder(order)
+	return finalOrder
+
+}
+
 func (broker *AlpacaBroker) ChangeOrderTrail(order *alpaca.Order, newTrail float64) *alpaca.Order {
 	ordeID := order.ID
 	newTrailDecimal := decimal.NewFromFloat(newTrail)
