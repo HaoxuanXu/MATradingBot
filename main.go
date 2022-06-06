@@ -60,7 +60,7 @@ func main() {
 		if len(barData) > 0 {
 			totalData.BarData = barData
 		}
-		totalData.TradeData = dataEngine.GetLatestMultiTrades(assets)
+		totalData.QuoteData = dataEngine.GetLatestMultiQuotes(assets)
 		chanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
 	}

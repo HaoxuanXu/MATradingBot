@@ -13,18 +13,18 @@ func RefreshPosition(model *model.DataModel, broker *api.AlpacaBroker) {
 }
 
 func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
-	currentTrade := data.TradeData[model.Symbol].Price
-	stop_loss := currentTrade - math.Abs(currentTrade-model.Signal.CurrentParabolicSar)
-	take_proft := currentTrade + math.Abs(currentTrade-model.Signal.CurrentParabolicSar)
+	currentQuote := data.QuoteData[model.Symbol].AskPrice
+	stop_loss := currentQuote - math.Abs(currentQuote-model.Signal.CurrentParabolicSar)
+	take_proft := currentQuote + math.Abs(currentQuote-model.Signal.CurrentParabolicSar)
 	order := broker.SubmitBracketOrder(qty, take_proft, stop_loss, model.Symbol, "buy")
 	transaction.UpdatePositionAfterTransaction(model, order)
 	transaction.RecordEntryTransaction(model)
 }
 
 func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
-	currentTrade := data.TradeData[model.Symbol].Price
-	stop_loss := currentTrade + math.Abs(currentTrade-model.Signal.CurrentParabolicSar)
-	take_proft := currentTrade - math.Abs(currentTrade-model.Signal.CurrentParabolicSar)
+	currentQuote := data.QuoteData[model.Symbol].BidPrice
+	stop_loss := currentQuote + math.Abs(currentQuote-model.Signal.CurrentParabolicSar)
+	take_proft := currentQuote - math.Abs(currentQuote-model.Signal.CurrentParabolicSar)
 	order := broker.SubmitBracketOrder(qty, take_proft, stop_loss, model.Symbol, "sell")
 	transaction.UpdatePositionAfterTransaction(model, order)
 	transaction.RecordEntryTransaction(model)
