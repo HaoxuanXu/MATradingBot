@@ -12,8 +12,8 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/internal/channel"
 	"github.com/HaoxuanXu/MATradingBot/internal/logging"
-	strat "github.com/HaoxuanXu/MATradingBot/strats"
-	"github.com/HaoxuanXu/MATradingBot/strats/model"
+	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema"
+	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
 	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
@@ -49,7 +49,7 @@ func main() {
 	// start workers
 	for _, asset := range assets {
 		log.Printf("Starting worker for %s trading\n", asset)
-		go strat.MATradingStrategy(asset, accountType, serverType, workerEntryPercent, &totalData, chanMap.Map[asset])
+		go macdpsar200ema.MACDPSar200EMAStrategy(asset, accountType, serverType, workerEntryPercent, &totalData, chanMap.Map[asset])
 	}
 
 	// start main loop
