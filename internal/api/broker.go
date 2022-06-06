@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"math"
 	"sync"
 	"time"
 
@@ -137,8 +138,8 @@ func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float
 	defer lock.Unlock()
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
-	takeProfitLimitPrice := decimal.NewFromFloat(take_profit)
-	takeLossLimitPrice := decimal.NewFromFloat(take_loss)
+	takeProfitLimitPrice := decimal.NewFromFloat(math.Round(take_profit*100) / 100)
+	takeLossLimitPrice := decimal.NewFromFloat(math.Round(take_loss*100) / 100)
 	order, err := broker.Client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
 			AssetKey:   &symbol,
