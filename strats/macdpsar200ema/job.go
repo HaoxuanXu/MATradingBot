@@ -1,13 +1,13 @@
-package strat
+package macdpsar200ema
 
 import (
 	"log"
 
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
-	"github.com/HaoxuanXu/MATradingBot/strat/dataprocessor"
-	"github.com/HaoxuanXu/MATradingBot/strat/model"
-	"github.com/HaoxuanXu/MATradingBot/strat/pipeline"
-	"github.com/HaoxuanXu/MATradingBot/strat/signalcatcher"
+	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/dataprocessor"
+	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
+	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/pipeline"
+	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/signalcatcher"
 	"github.com/HaoxuanXu/MATradingBot/util"
 )
 

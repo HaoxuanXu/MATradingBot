@@ -12,9 +12,8 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/internal/channel"
 	"github.com/HaoxuanXu/MATradingBot/internal/logging"
-	"github.com/HaoxuanXu/MATradingBot/strat"
-	"github.com/HaoxuanXu/MATradingBot/strat/model"
-	"github.com/HaoxuanXu/MATradingBot/strat/tools"
+	strat "github.com/HaoxuanXu/MATradingBot/strats"
+	"github.com/HaoxuanXu/MATradingBot/strats/model"
 	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
@@ -57,16 +56,13 @@ func main() {
 	log.Println("Start main loop...")
 	broker.Clock, _ = broker.Client.GetClock()
 	for time.Until(broker.Clock.NextClose) > 0 {
-		barData := dataEngine.GetMultiBars(5, assets)
+		barData := dataEngine.GetMultiBars(30, assets)
 		if len(barData) > 0 {
 			totalData.BarData = barData
 		}
 		totalData.TradeData = dataEngine.GetLatestMultiTrades(assets)
-		for key := range totalData.BarData {
-			totalData.BarData[key] = tools.Reverse(totalData.BarData[key])
-		}
 		chanMap.TriggerWorkers()
-		time.Sleep(5 * time.Minute)
+		time.Sleep(time.Minute)
 	}
 	// close operation when the market is closed
 	log.Println("Shutting down workers...")

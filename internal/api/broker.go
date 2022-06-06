@@ -145,6 +145,7 @@ func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float
 			AccountID:  broker.Account.ID,
 			Qty:        &quantity,
 			Side:       alpaca.Side(side),
+			Type:       alpaca.Market,
 			OrderClass: alpaca.Bracket,
 			TakeProfit: &alpaca.TakeProfit{
 				LimitPrice: &takeProfitLimitPrice,
@@ -153,6 +154,7 @@ func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float
 				LimitPrice: &takeLossLimitPrice,
 				StopPrice:  &takeLossLimitPrice,
 			},
+			TimeInForce: alpaca.GTC,
 		},
 	)
 	if err != nil {
