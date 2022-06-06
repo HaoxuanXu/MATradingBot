@@ -182,7 +182,7 @@ func (broker *AlpacaBroker) ChangeOrderTrail(order *alpaca.Order, newTrail float
 func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status, orderType string) (*alpaca.Order, error) {
 	defer lock.Unlock()
 	lock.Lock()
-	limit := 1
+	limit := 10
 	nested := false
 	until := time.Now()
 	orderList, err := broker.Client.ListOrders(&status, &until, &limit, &nested)
