@@ -21,6 +21,8 @@ func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent
 
 		pipeline.RefreshPosition(dataModel, broker)
 		if dataprocessor.ProcessBarData(dataModel, totalData) {
+			log.Printf("%s: curr: %.3f, prev: %.3f\n", dataModel.Symbol, dataModel.Signal.RecentParabolicSarDiff[len(dataModel.Signal.RecentParabolicSarDiff)-1],
+				dataModel.Signal.RecentParabolicSarDiff[len(dataModel.Signal.RecentParabolicSarDiff)-2])
 			qty := float64(int(entryAmount / totalData.QuoteData[dataModel.Symbol].AskPrice))
 			if signalcatcher.CanEnterLong(dataModel, broker) {
 				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, qty)
