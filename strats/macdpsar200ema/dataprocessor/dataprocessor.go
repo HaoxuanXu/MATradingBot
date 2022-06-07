@@ -9,13 +9,6 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 
 	// update the current bar
 	model.Signal.CurrentBar = data.BarData[model.Symbol][len(data.BarData[model.Symbol])-1]
-	if model.Signal.PreviousClose == 0 {
-		model.Signal.CurrentClose = data.BarData[model.Symbol][len(data.BarData[model.Symbol])-1].Close
-		model.Signal.PreviousClose = data.BarData[model.Symbol][len(data.BarData[model.Symbol])-2].Close
-	} else {
-		model.Signal.PreviousClose = model.Signal.CurrentClose
-		model.Signal.CurrentClose = data.BarData[model.Symbol][len(data.BarData[model.Symbol])-1].Close
-	}
 
 	if model.Signal.CurrentBar.Timestamp != model.CurrentBarTimestamp {
 		// there is an update in the data, we then proceed the following processes
@@ -35,14 +28,14 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 
 		// calculate the current parabolic sar
 		parSarVals, _ := indicator.ParabolicSar(highBars, lowBars, closeBars)
-		if model.Signal.PreviousParabolicSar == 0 {
-			model.Signal.CurrentParabolicSar = parSarVals[len(parSarVals)-1]
-			model.Signal.PreviousParabolicSar = parSarVals[len(parSarVals)-2]
-		} else {
-			model.Signal.PreviousParabolicSar = model.Signal.CurrentParabolicSar
-			model.Signal.CurrentParabolicSar = parSarVals[len(parSarVals)-1]
-		}
+		parSarValsSub := parSarVals[len(parSarVals)-5:]
+		barsSub := data.BarData[model.Symbol][len(data.BarData[model.Symbol])-5:]
 
+		var temp []float64
+		for i, barVal := range barsSub {
+			temp = append(temp, barVal.Close-parSarValsSub[i])
+		}
+		model.Signal.RecentParabolicSarDiff = temp
 		// calculate the current MACD values (MACD line, MACD signal line)
 		macd, macdSignal := indicator.Macd(closeBars)
 		model.Signal.CurrentMacd = macd[len(macd)-1]
