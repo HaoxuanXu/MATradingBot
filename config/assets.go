@@ -11,4 +11,5 @@ var Assets = []string{
 	"AMC",
 	"DIS",
 	"GOOG",
+	"NFLX",
 }
