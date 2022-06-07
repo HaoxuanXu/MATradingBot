@@ -2,8 +2,8 @@ package util
 
 import "fmt"
 
-func HandlePanic() {
+func HandlePanic(symbol string) {
 	if r := recover(); r != nil {
-		fmt.Println("Recovering from panic:", r)
+		fmt.Printf("%s worker recovering from panic:\n", symbol)
 	}
 }
