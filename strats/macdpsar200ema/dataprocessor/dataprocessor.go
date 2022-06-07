@@ -27,9 +27,9 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		model.Signal.CurrentEMA200Period = ema200Period[len(ema200Period)-1]
 
 		// calculate the current parabolic sar
-		parSarVals, _ := indicator.ParabolicSar(highBars, lowBars, closeBars)
+		parSarVals, trend := indicator.ParabolicSar(highBars, lowBars, closeBars)
 		model.Signal.CurrentParabolicSar = parSarVals[len(parSarVals)-1]
-		model.Signal.PastPrabolicSars = parSarVals[len(parSarVals)-2:]
+		model.Signal.ParabolicSarTrend = int(trend[len(trend)-1])
 
 		// calculate the current MACD values (MACD line, MACD signal line)
 		macd, macdSignal := indicator.Macd(closeBars)
