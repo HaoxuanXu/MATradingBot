@@ -40,6 +40,8 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		macd, macdSignal := indicator.Macd(closeBars)
 		model.Signal.CurrentMacd = macd[len(macd)-1]
 		model.Signal.CurrentMacdSignal = macdSignal[len(macdSignal)-1]
+
+		model.CurrentBarTimestamp = model.Signal.CurrentBar.Timestamp
 		return true
 	}
 	return false
