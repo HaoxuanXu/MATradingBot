@@ -44,7 +44,7 @@ func Run(accountType, serverType string, entryPercent float64) {
 	log.Println("Start main loop...")
 	broker.Clock, _ = broker.Client.GetClock()
 	for time.Until(broker.Clock.NextClose) > 0 {
-		barData := dataEngine.GetMultiBars(30, assets)
+		barData := dataEngine.GetMultiBars(5, assets)
 		if len(barData) > 0 {
 			totalData.BarData = barData
 		}
