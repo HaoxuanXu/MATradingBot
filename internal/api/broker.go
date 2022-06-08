@@ -43,6 +43,10 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string) {
 	broker.Cash = broker.Account.Equity.Abs().InexactFloat64()
 }
 
+func (broker *AlpacaBroker) GetClock() (*alpaca.Clock, error) {
+	return broker.Client.GetClock()
+}
+
 func (broker *AlpacaBroker) RefreshOrderStatus(orderID string) (*alpaca.Order, error) {
 	newOrder, err := broker.Client.GetOrder(orderID)
 

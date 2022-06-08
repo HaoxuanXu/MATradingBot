@@ -12,13 +12,23 @@ func RefreshPosition(model *model.DataModel, broker *api.AlpacaBroker) {
 	transaction.RetrievePositionIfExists(model, broker)
 }
 
-func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
-	currentQuote := data.QuoteData[model.Symbol].AskPrice
-	profitOffset := math.Min(math.Abs(model.Signal.CurrentBar.Low-model.Signal.CurrentParabolicSar),
-		currentQuote*0.007)
-	if profitOffset < 0.01 {
-		return
+func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64, isCrypto bool) {
+	var profitOffset float64
+	var currentQuote float64
+	if !isCrypto {
+		currentQuote = data.StockQuoteData[model.Symbol].AskPrice
+		profitOffset = math.Min(math.Abs(model.Signal.CurrentBar.Low-model.Signal.CurrentParabolicSar),
+			currentQuote*0.007)
+		if profitOffset < 0.01 {
+			return
+		}
+	} else {
+		currentQuote = data.CryptoQuoteData[model.Symbol].AskPrice
+		profitOffset = math.Min(math.Abs(model.Signal.CurrentCryptoBar.Low-model.Signal.CurrentParabolicSar),
+			currentQuote*0.007)
+
 	}
+
 	stop_loss := currentQuote - profitOffset
 	take_proft := currentQuote + profitOffset
 	order := broker.SubmitBracketOrder(qty, take_proft, stop_loss, model.Symbol, "buy")
@@ -26,12 +36,20 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 	transaction.RecordEntryTransaction(model)
 }
 
-func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
-	currentQuote := data.QuoteData[model.Symbol].BidPrice
-	profitOffset := math.Min(math.Abs(model.Signal.CurrentParabolicSar-model.Signal.CurrentBar.High), currentQuote*0.007)
-	if profitOffset < 0.01 {
+func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64, isCrypto bool) {
+	var currentQuote float64
+	var profitOffset float64
+	if !isCrypto {
+		currentQuote = data.StockQuoteData[model.Symbol].BidPrice
+		profitOffset = math.Min(math.Abs(model.Signal.CurrentParabolicSar-model.Signal.CurrentBar.High), currentQuote*0.007)
+		if profitOffset < 0.01 {
+			return
+		}
+	} else {
+		// Crypto API current does not accept short
 		return
 	}
+
 	stop_loss := currentQuote + profitOffset
 	take_proft := currentQuote - profitOffset
 	order := broker.SubmitBracketOrder(qty, take_proft, stop_loss, model.Symbol, "sell")

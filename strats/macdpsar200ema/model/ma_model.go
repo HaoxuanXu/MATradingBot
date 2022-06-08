@@ -25,8 +25,10 @@ type DataModel struct {
 }
 
 type TotalBarData struct {
-	BarData   map[string][]marketdata.Bar
-	QuoteData map[string]marketdata.Quote
+	StockBarData    map[string][]marketdata.Bar
+	StockQuoteData  map[string]marketdata.Quote
+	CryptoBarData   map[string][]marketdata.CryptoBar
+	CryptoQuoteData map[string]marketdata.CryptoQuote
 }
 
 type SignalData struct {
@@ -35,6 +37,8 @@ type SignalData struct {
 	PreviousParabolicSar float64
 	CurrentBar           marketdata.Bar
 	PreviousBar          marketdata.Bar
+	CurrentCryptoBar     marketdata.CryptoBar
+	PreviousCryptoBar    marketdata.CryptoBar
 	CurrentMacd          float64
 	CurrentMacdSignal    float64
 }
