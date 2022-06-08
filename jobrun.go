@@ -56,13 +56,13 @@ func Run() {
 	log.Println("Start main loop...")
 	broker.Clock, _ = broker.Client.GetClock()
 	for time.Until(broker.Clock.NextClose) > 0 {
-		barData := dataEngine.GetMultiBars(5, assets)
+		barData := dataEngine.GetMultiBars(1, assets)
 		if len(barData) > 0 {
 			totalData.BarData = barData
 		}
 		totalData.QuoteData = dataEngine.GetLatestMultiQuotes(assets)
 		chanMap.TriggerWorkers()
-		time.Sleep(time.Minute)
+		time.Sleep(time.Second)
 	}
 	// close operation when the market is closed
 	log.Println("Shutting down workers...")
