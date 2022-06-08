@@ -13,6 +13,7 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.CurrentBar.Close > model.Signal.CurrentEMA200Period && // the current price is above the 200 period EMA value
 		model.Signal.CurrentParabolicSar < model.Signal.CurrentBar.Low &&
 		model.Signal.PreviousParabolicSar > model.Signal.PreviousBar.High &&
+		model.Signal.CurrentMacd > model.Signal.CurrentMacdSignal &&
 		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
@@ -24,6 +25,7 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.CurrentBar.Close < model.Signal.CurrentEMA200Period && // the current price is below the 200 period EMA value
 		model.Signal.CurrentParabolicSar > model.Signal.CurrentBar.High &&
 		model.Signal.PreviousParabolicSar < model.Signal.PreviousBar.Low &&
+		model.Signal.CurrentMacd < model.Signal.CurrentMacdSignal &&
 		time.Until(broker.Clock.NextClose) > time.Hour {
 		return true
 	}
