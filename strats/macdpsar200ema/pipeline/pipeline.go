@@ -24,8 +24,8 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 		}
 	} else {
 		currentQuote = data.CryptoQuoteData[model.Symbol].AskPrice
-		profitOffset = math.Min(math.Abs(model.Signal.CurrentCryptoBar.Low-model.Signal.CurrentParabolicSar),
-			currentQuote*0.007)
+		profitOffset = math.Abs(math.Min(math.Abs(model.Signal.CurrentCryptoBar.Low-model.Signal.CurrentParabolicSar),
+			currentQuote*0.007))
 
 	}
 
@@ -41,7 +41,7 @@ func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData,
 	var profitOffset float64
 	if !isCrypto {
 		currentQuote = data.StockQuoteData[model.Symbol].BidPrice
-		profitOffset = math.Min(math.Abs(model.Signal.CurrentParabolicSar-model.Signal.CurrentBar.High), currentQuote*0.007)
+		profitOffset = math.Abs(math.Min(math.Abs(model.Signal.CurrentParabolicSar-model.Signal.CurrentBar.High), currentQuote*0.007))
 		if profitOffset < 0.01 {
 			return
 		}
