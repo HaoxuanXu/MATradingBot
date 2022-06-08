@@ -55,6 +55,7 @@ func Run(accountType, serverType string, entryPercent float64) {
 	// close operation when the market is closed
 	log.Println("Shutting down workers...")
 	chanMap.CloseWorkers()
+	time.Sleep(5 * time.Second)
 	log.Println("Closing channels...")
 	chanMap.CloseChannels()
 	logFile.Close()
