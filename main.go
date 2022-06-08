@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/db"
@@ -24,9 +25,10 @@ func main() {
 	yamlConfig := util.ReadYAMLFile(db.MapYAMLConfigPath(*yamlFileName))
 	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
 	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
+	totalEntryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%v", yamlConfig["entrypercent"]), 64)
 
 	if api.GetBroker(accountType, serverType).Clock.IsOpen {
-		Run()
+		Run(accountType, serverType, totalEntryPercent)
 	}
 
 	s.StartBlocking()

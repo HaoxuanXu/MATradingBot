@@ -1,36 +1,24 @@
 package main
 
 import (
-	"flag"
-	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/HaoxuanXu/MATradingBot/config"
-	"github.com/HaoxuanXu/MATradingBot/db"
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/internal/channel"
 	"github.com/HaoxuanXu/MATradingBot/internal/logging"
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema"
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
-	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
-func Run() {
+func Run(accountType, serverType string, entryPercent float64) {
 	// read from flag
-	yamlFileName := flag.String("config", "production-paper-account.yml", "this yml config file for the application")
-	flag.Parse()
-
-	yamlConfig := util.ReadYAMLFile(db.MapYAMLConfigPath(*yamlFileName))
 
 	var totalData model.TotalBarData
 	assets := config.Assets
 
-	accountType := fmt.Sprintf("%s", yamlConfig["accounttype"])
-	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
-	totalEntryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%v", yamlConfig["entrypercent"]), 64)
-	workerEntryPercent := totalEntryPercent / float64(len(assets))
+	workerEntryPercent := entryPercent / float64(len(assets))
 
 	// set up logging
 	logFile := logging.SetLogging()
