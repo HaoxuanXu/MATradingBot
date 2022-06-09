@@ -59,14 +59,14 @@ func main() {
 	for {
 		clock, _ := broker.GetClock()
 		if clock.IsOpen {
-			barData := dataEngine.GetMultiBars(30, stocks)
+			barData := dataEngine.GetMultiBars(15, stocks)
 			if len(barData) > 0 {
 				totalData.StockBarData = barData
 			}
 			totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
 			stockChanMap.TriggerWorkers()
 		}
-		cryptoBarData := dataEngine.GetMultiCryptoBars(30, cryptos)
+		cryptoBarData := dataEngine.GetMultiCryptoBars(15, cryptos)
 		if len(cryptoBarData) > 0 {
 			totalData.CryptoBarData = cryptoBarData
 		}
