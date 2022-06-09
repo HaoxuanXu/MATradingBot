@@ -29,19 +29,23 @@ func main() {
 
 	var totalData model.TotalBarData
 	stocks := config.Stocks
-	cryptos := config.Crypto
 
-	workerEntryPercent := entryPercent / float64(len(stocks)+len(cryptos))
+	workerEntryPercent := entryPercent / float64(len(stocks))
 
 	// set up logging
-	_ = logging.SetLogging()
+	logFile := logging.SetLogging()
+	log.Printf("Number of Workers: %d\n", len(stocks))
 
 	dataEngine := api.GetDataEngine(accountType, serverType)
 	broker := api.GetBroker(accountType, serverType)
 
+	clock, _ := broker.GetClock()
+	if !clock.IsOpen {
+		log.Printf("Market closed currently. Wait for %d minutes\n", clock.NextOpen.Minute())
+	}
+
 	// create channel map
 	stockChanMap := channel.CreateMap(stocks)
-	cryptoChanMap := channel.CreateMap(cryptos)
 
 	// start workers
 	for _, stock := range stocks {
@@ -49,29 +53,24 @@ func main() {
 		go macdpsar200ema.MACDPSar200EMAStrategy(stock, accountType, serverType, workerEntryPercent, &totalData, false, stockChanMap.Map[stock])
 	}
 
-	for _, crypto := range cryptos {
-		log.Printf("Starting worker for %s trading\n", crypto)
-		go macdpsar200ema.MACDPSar200EMAStrategy(crypto, accountType, serverType, workerEntryPercent, &totalData, true, cryptoChanMap.Map[crypto])
-	}
-
 	// start main loop
 	log.Println("Start main loop...")
-	for {
-		clock, _ := broker.GetClock()
-		if clock.IsOpen {
-			barData := dataEngine.GetMultiBars(30, stocks)
-			if len(barData) > 0 {
-				totalData.StockBarData = barData
-			}
-			totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
-			stockChanMap.TriggerWorkers()
+	for clock.IsOpen {
+
+		barData := dataEngine.GetMultiBars(30, stocks)
+		if len(barData) > 0 {
+			totalData.StockBarData = barData
 		}
-		cryptoBarData := dataEngine.GetMultiCryptoBars(30, cryptos)
-		if len(cryptoBarData) > 0 {
-			totalData.CryptoBarData = cryptoBarData
-		}
-		totalData.CryptoQuoteData = dataEngine.GetLatestMultiCryptoQuotes(cryptos)
-		cryptoChanMap.TriggerWorkers()
+
+		totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
+		stockChanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
+		clock, _ = broker.GetClock()
 	}
+
+	stockChanMap.CloseWorkers()
+	time.Sleep(5 * time.Second) // wait for all worker routines to close
+	stockChanMap.CloseChannels()
+	logFile.Close()
+
 }
