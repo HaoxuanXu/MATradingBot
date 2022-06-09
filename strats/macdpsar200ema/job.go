@@ -24,11 +24,7 @@ func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent
 		pipeline.RefreshPosition(dataModel, broker)
 		if dataprocessor.ProcessBarData(dataModel, totalData, isCrypto) {
 
-			if !isCrypto {
-				qty = float64(int(entryAmount / totalData.StockQuoteData[dataModel.Symbol].AskPrice))
-			} else {
-				qty = float64(int(entryAmount / totalData.CryptoQuoteData[dataModel.Symbol].AskPrice))
-			}
+			qty = float64(int(entryAmount / totalData.CryptoQuoteData[dataModel.Symbol].AskPrice))
 
 			if signalcatcher.CanEnterLong(dataModel, broker, isCrypto) && qty > 0 {
 				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, qty, isCrypto)
