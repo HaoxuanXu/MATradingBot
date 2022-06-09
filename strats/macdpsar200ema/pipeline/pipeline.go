@@ -48,16 +48,15 @@ func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData,
 		if profitOffset < 0.01 {
 			return
 		}
+		stop_loss := currentQuote + profitOffset
+		take_profit := currentQuote - profitOffset
+		if take_profit < stop_loss {
+			order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
+			transaction.UpdatePositionAfterTransaction(model, order)
+			transaction.RecordEntryTransaction(model)
+		}
 	} else {
 		// Crypto API current does not accept short
 		return
 	}
-	stop_loss := currentQuote + profitOffset
-	take_profit := currentQuote - profitOffset
-	if take_profit < stop_loss {
-		order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
-		transaction.UpdatePositionAfterTransaction(model, order)
-		transaction.RecordEntryTransaction(model)
-	}
-
 }
