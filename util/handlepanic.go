@@ -1,9 +1,9 @@
 package util
 
-import "fmt"
+import "log"
 
 func HandlePanic(symbol string) {
 	if r := recover(); r != nil {
-		fmt.Printf("%s worker recovering from panic:\n", symbol)
+		log.Printf("%s worker recovering from panic:\n", symbol)
 	}
 }
