@@ -163,7 +163,7 @@ func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float
 		},
 	)
 	if err != nil {
-		log.Println(err)
+		log.Printf("%s: %v", symbol, err)
 	}
 	finalOrder := broker.MonitorOrder(order)
 	return finalOrder

@@ -30,10 +30,13 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 	}
 
 	stop_loss := currentQuote - profitOffset
-	take_proft := currentQuote + profitOffset
-	order := broker.SubmitBracketOrder(qty, take_proft, stop_loss, model.Symbol, "buy")
-	transaction.UpdatePositionAfterTransaction(model, order)
-	transaction.RecordEntryTransaction(model)
+	take_profit := currentQuote + profitOffset
+	if take_profit > stop_loss {
+		order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "buy")
+		transaction.UpdatePositionAfterTransaction(model, order)
+		transaction.RecordEntryTransaction(model)
+	}
+
 }
 
 func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64, isCrypto bool) {
@@ -49,10 +52,12 @@ func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData,
 		// Crypto API current does not accept short
 		return
 	}
-
 	stop_loss := currentQuote + profitOffset
-	take_proft := currentQuote - profitOffset
-	order := broker.SubmitBracketOrder(qty, take_proft, stop_loss, model.Symbol, "sell")
-	transaction.UpdatePositionAfterTransaction(model, order)
-	transaction.RecordEntryTransaction(model)
+	take_profit := currentQuote - profitOffset
+	if take_profit < stop_loss {
+		order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
+		transaction.UpdatePositionAfterTransaction(model, order)
+		transaction.RecordEntryTransaction(model)
+	}
+
 }
