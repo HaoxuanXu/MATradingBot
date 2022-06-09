@@ -17,8 +17,7 @@ func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent
 	dataModel := model.GetDataModel(symbol)
 	entryAmount := broker.Cash * entryPercent
 
-	var longQty float64
-	var shortQty float64
+	var qty float64
 
 	for <-channel {
 
@@ -26,17 +25,15 @@ func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent
 		if dataprocessor.ProcessBarData(dataModel, totalData, isCrypto) {
 
 			if !isCrypto {
-				longQty = entryAmount / totalData.StockQuoteData[dataModel.Symbol].AskPrice
-				shortQty = float64(int(entryAmount / totalData.StockQuoteData[dataModel.Symbol].AskPrice))
+				qty = float64(int(entryAmount / totalData.StockQuoteData[dataModel.Symbol].AskPrice))
 			} else {
-				longQty = entryAmount / totalData.CryptoQuoteData[dataModel.Symbol].AskPrice
-				shortQty = float64(int(entryAmount / totalData.CryptoQuoteData[dataModel.Symbol].AskPrice))
+				qty = float64(int(entryAmount / totalData.CryptoQuoteData[dataModel.Symbol].AskPrice))
 			}
 
-			if signalcatcher.CanEnterLong(dataModel, broker, isCrypto) && longQty > 0 {
-				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, longQty, isCrypto)
-			} else if signalcatcher.CanEnterShort(dataModel, broker, isCrypto) && shortQty > 0 {
-				pipeline.EnterBracketShortPosition(dataModel, totalData, broker, shortQty, isCrypto)
+			if signalcatcher.CanEnterLong(dataModel, broker, isCrypto) && qty > 0 {
+				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, qty, isCrypto)
+			} else if signalcatcher.CanEnterShort(dataModel, broker, isCrypto) && qty > 0 {
+				pipeline.EnterBracketShortPosition(dataModel, totalData, broker, qty, isCrypto)
 			}
 		}
 
