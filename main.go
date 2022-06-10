@@ -55,7 +55,7 @@ func main() {
 
 	// start main loop
 	log.Println("Start main loop...")
-	for clock.IsOpen {
+	for time.Until(clock.NextClose) > 0 {
 
 		barData := dataEngine.GetMultiBars(30, stocks)
 		if len(barData) > 0 {
@@ -65,7 +65,6 @@ func main() {
 		totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
 		stockChanMap.TriggerWorkers()
 		time.Sleep(time.Minute)
-		clock, _ = broker.GetClock()
 	}
 
 	stockChanMap.CloseWorkers()
