@@ -54,6 +54,7 @@ func main() {
 	}
 
 	// start main loop
+	clock, _ = broker.GetClock()
 	log.Println("Start main loop...")
 	for time.Until(clock.NextClose) > 0 {
 
