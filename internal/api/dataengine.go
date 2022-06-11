@@ -47,19 +47,6 @@ func (engine *MarketDataEngine) GetMultiBars(timeframe int, stocks []string) map
 	return result
 }
 
-func (engine *MarketDataEngine) GetMultiCryptoBars(timeframe int, cryptos []string) map[string][]marketdata.CryptoBar {
-	result, err := engine.client.GetCryptoMultiBars(cryptos, marketdata.GetCryptoBarsParams{
-		TimeFrame: marketdata.NewTimeFrame(timeframe, marketdata.TimeFrameUnit(marketdata.Min)),
-		Start:     util.GetStartTime(time.Now(), 30),
-		End:       time.Now(),
-	})
-	if err != nil {
-		log.Println(err)
-	}
-
-	return result
-}
-
 func (engine *MarketDataEngine) GetLatestMultiTrades(assets []string) map[string]marketdata.Trade {
 	result, err := engine.client.GetLatestTrades(assets)
 	if err != nil {
@@ -71,15 +58,6 @@ func (engine *MarketDataEngine) GetLatestMultiTrades(assets []string) map[string
 func (engine *MarketDataEngine) GetLatestMultiQuotes(assets []string) map[string]marketdata.Quote {
 
 	result, err := engine.client.GetLatestQuotes(assets)
-	if err != nil {
-		log.Println(err)
-	}
-
-	return result
-}
-
-func (engine *MarketDataEngine) GetLatestMultiCryptoQuotes(cryptos []string) map[string]marketdata.CryptoQuote {
-	result, err := engine.client.GetLatestCryptoQuotes(cryptos, "FTXU")
 	if err != nil {
 		log.Println(err)
 	}

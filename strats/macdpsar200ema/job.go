@@ -11,7 +11,7 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
-func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, isCrypto bool, channel chan bool) {
+func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, channel chan bool) {
 	defer util.HandlePanic(symbol)
 	broker := api.GetBroker(accountType, serverType)
 	dataModel := model.GetDataModel(symbol)
@@ -22,14 +22,14 @@ func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent
 	for <-channel {
 
 		pipeline.RefreshPosition(dataModel, broker)
-		if dataprocessor.ProcessBarData(dataModel, totalData, isCrypto) {
+		if dataprocessor.ProcessBarData(dataModel, totalData) {
 
-			qty = float64(int(entryAmount / totalData.CryptoQuoteData[dataModel.Symbol].AskPrice))
+			qty = float64(int(entryAmount / totalData.StockQuoteData[dataModel.Symbol].AskPrice))
 
-			if signalcatcher.CanEnterLong(dataModel, broker, isCrypto) && qty > 0 {
-				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, qty, isCrypto)
-			} else if signalcatcher.CanEnterShort(dataModel, broker, isCrypto) && qty > 0 {
-				pipeline.EnterBracketShortPosition(dataModel, totalData, broker, qty, isCrypto)
+			if signalcatcher.CanEnterLong(dataModel, broker) && qty > 0 {
+				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, qty)
+			} else if signalcatcher.CanEnterShort(dataModel, broker) && qty > 0 {
+				pipeline.EnterBracketShortPosition(dataModel, totalData, broker, qty)
 			}
 		}
 

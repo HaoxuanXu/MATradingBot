@@ -50,7 +50,7 @@ func main() {
 	// start workers
 	for _, stock := range stocks {
 		log.Printf("Starting worker for %s trading\n", stock)
-		go macdpsar200ema.MACDPSar200EMAStrategy(stock, accountType, serverType, workerEntryPercent, &totalData, false, stockChanMap.Map[stock])
+		go macdpsar200ema.MACDPSar200EMAStrategy(stock, accountType, serverType, workerEntryPercent, &totalData, stockChanMap.Map[stock])
 	}
 
 	// start main loop
