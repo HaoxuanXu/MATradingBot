@@ -58,7 +58,7 @@ func main() {
 	log.Println("Start main loop...")
 	for time.Until(clock.NextClose) > 0 {
 
-		barData := dataEngine.GetMultiBars(30, stocks)
+		barData := dataEngine.GetMultiBars(15, stocks)
 		if len(barData) > 0 {
 			totalData.StockBarData = barData
 		}
