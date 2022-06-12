@@ -1,0 +1,1 @@
+./MATradingBot -config $1
