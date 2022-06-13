@@ -20,7 +20,7 @@ func pSarPrevDirection(pSars []float64, pBars []marketdata.Bar, currDirection st
 		}
 
 		for _, val := range resultFloats {
-			if val < 0 {
+			if val > 0 {
 				return true
 			}
 		}
@@ -36,7 +36,7 @@ func pSarPrevDirection(pSars []float64, pBars []marketdata.Bar, currDirection st
 		}
 
 		for _, val := range resultFloats {
-			if val >= 0 {
+			if val < 0 {
 				return true
 			}
 		}
@@ -52,7 +52,7 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] && // the current price is above the 200 period EMA value
 		model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1] < model.Signal.Bars[len(model.Signal.Bars)-1].Low &&
-		pSarPrevDirection(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-2:], model.Signal.Bars[len(model.Signal.Bars)-2:], "below") &&
+		pSarPrevDirection(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-3:], model.Signal.Bars[len(model.Signal.Bars)-3:], "below") &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] {
 		return true
 	}
