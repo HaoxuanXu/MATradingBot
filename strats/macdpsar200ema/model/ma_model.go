@@ -30,13 +30,11 @@ type TotalBarData struct {
 }
 
 type SignalData struct {
-	CurrentEMA200Period  float64
-	CurrentParabolicSar  float64
-	PreviousParabolicSar float64
-	CurrentBar           marketdata.Bar
-	PreviousBar          marketdata.Bar
-	CurrentMacd          float64
-	CurrentMacdSignal    float64
+	EMA200Periods []float64
+	ParabolicSars []float64
+	Bars          []marketdata.Bar
+	Macds         []float64
+	MacdSignals   []float64
 }
 
 type PositionData struct {

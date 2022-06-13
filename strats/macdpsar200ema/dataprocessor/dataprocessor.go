@@ -7,11 +7,10 @@ import (
 
 func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 
-	// update the current bar
-	model.Signal.CurrentBar = data.StockBarData[model.Symbol][len(data.StockBarData[model.Symbol])-1]
-	model.Signal.PreviousBar = data.StockBarData[model.Symbol][len(data.StockBarData[model.Symbol])-2]
+	// update the bars
+	model.Signal.Bars = data.StockBarData[model.Symbol]
 
-	if model.Signal.CurrentBar.Timestamp != model.CurrentBarTimestamp {
+	if model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp != model.CurrentBarTimestamp {
 		// there is an update in the data, we then proceed the following processes
 		// retrieve close data from bar slice
 		var closeBars []float64
@@ -25,18 +24,17 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 
 		// calculate the current 200 period EMA value
 		ema200Period := indicator.Ema(200, closeBars)
-		model.Signal.CurrentEMA200Period = ema200Period[len(ema200Period)-1]
+		model.Signal.EMA200Periods = ema200Period
 
 		// calculate the current parabolic sar
 		parSarVals, _ := indicator.ParabolicSar(highBars, lowBars, closeBars)
-		model.Signal.CurrentParabolicSar = parSarVals[len(parSarVals)-1]
-		model.Signal.PreviousParabolicSar = parSarVals[len(parSarVals)-2]
+		model.Signal.ParabolicSars = parSarVals
 		// calculate the current MACD values (MACD line, MACD signal line)
 		macd, macdSignal := indicator.Macd(closeBars)
-		model.Signal.CurrentMacd = macd[len(macd)-1]
-		model.Signal.CurrentMacdSignal = macdSignal[len(macdSignal)-1]
+		model.Signal.Macds = macd
+		model.Signal.MacdSignals = macdSignal
 
-		model.CurrentBarTimestamp = model.Signal.CurrentBar.Timestamp
+		model.CurrentBarTimestamp = model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp
 		return true
 	}
 

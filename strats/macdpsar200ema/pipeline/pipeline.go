@@ -14,19 +14,13 @@ func RefreshPosition(model *model.DataModel, broker *api.AlpacaBroker) {
 }
 
 func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
-	var profitOffset float64
-	var currentQuote float64
-	currentQuote = data.StockQuoteData[model.Symbol].AskPrice
-	profitOffset = math.Min(math.Abs(model.Signal.CurrentBar.Low-model.Signal.CurrentParabolicSar),
+	currentQuote := data.StockQuoteData[model.Symbol].AskPrice
+	profitOffset := math.Min(math.Abs(model.Signal.Bars[len(model.Signal.Bars)-1].Low-model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1]),
 		currentQuote*0.007)
 	if profitOffset < 0.01 {
 		log.Printf("long %s: profit offset value is only $%f, lower than $0.01 minimum\n", model.Symbol, profitOffset)
 		return
 	}
-	currentQuote = data.StockQuoteData[model.Symbol].AskPrice
-	profitOffset = math.Abs(math.Min(math.Abs(model.Signal.CurrentBar.Low-model.Signal.CurrentParabolicSar),
-		currentQuote*0.007))
-
 	stop_loss := currentQuote - profitOffset
 	take_profit := currentQuote + profitOffset
 	if take_profit > stop_loss {
@@ -41,11 +35,9 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 }
 
 func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
-	var currentQuote float64
-	var profitOffset float64
 
-	currentQuote = data.StockQuoteData[model.Symbol].BidPrice
-	profitOffset = math.Abs(math.Min(math.Abs(model.Signal.CurrentParabolicSar-model.Signal.CurrentBar.High), currentQuote*0.007))
+	currentQuote := data.StockQuoteData[model.Symbol].BidPrice
+	profitOffset := math.Abs(math.Min(math.Abs(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1]-model.Signal.Bars[len(model.Signal.Bars)-1].High), currentQuote*0.007))
 	if profitOffset < 0.01 {
 		log.Printf("short %s: profit offset value is only $%f, lower than $0.01 minimum\n", model.Symbol, profitOffset)
 		return
