@@ -66,7 +66,7 @@ func main() {
 
 		totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
 		stockChanMap.TriggerWorkers()
-		time.Sleep(time.Second)
+		time.Sleep(30 * time.Second)
 	}
 
 	stockChanMap.CloseWorkers()
