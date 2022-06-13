@@ -42,6 +42,7 @@ func main() {
 	clock, _ := broker.GetClock()
 	if !clock.IsOpen {
 		log.Printf("Market closed currently. Wait for %d minutes\n", clock.NextOpen.Minute())
+		time.Sleep(time.Until(clock.NextOpen))
 	}
 
 	// create channel map
