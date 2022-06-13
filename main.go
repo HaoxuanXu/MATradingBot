@@ -41,7 +41,7 @@ func main() {
 
 	clock, _ := broker.GetClock()
 	if !clock.IsOpen {
-		log.Printf("Market closed currently. Wait for %d minutes\n", clock.NextOpen.Minute())
+		log.Printf("Market closed currently. Wait for %d minutes\n", time.Until(clock.NextOpen))
 		time.Sleep(time.Until(clock.NextOpen))
 	}
 
