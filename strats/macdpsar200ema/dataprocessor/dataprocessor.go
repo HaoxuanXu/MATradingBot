@@ -10,7 +10,6 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 	// update the bars
 	model.Signal.Bars = data.StockBarData[model.Symbol]
 	model.Signal.Quote = data.StockQuoteData[model.Symbol]
-
 	if model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp != model.CurrentBarTimestamp {
 		// there is an update in the data, we then proceed the following processes
 		// retrieve close data from bar slice
@@ -34,6 +33,11 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		macd, macdSignal := indicator.Macd(closeBars)
 		model.Signal.Macds = macd
 		model.Signal.MacdSignals = macdSignal
+
+		// calculate the Ichimoku Span A and Span B
+		_, _, leadingSpanA, leadingSpanB, _ := indicator.IchimokuCloud(highBars, lowBars, closeBars)
+		model.Signal.IchimokuFastSpan = leadingSpanA
+		model.Signal.IchimokuSlowSpan = leadingSpanB
 
 		model.CurrentBarTimestamp = model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp
 		return true
