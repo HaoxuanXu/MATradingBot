@@ -5,10 +5,10 @@ import "fmt"
 type Path string
 
 const (
-	DATAPATH        Path = "./db/data/"
-	LOGPATH         Path = "./logs/"
-	MONITORPATH     Path = "./"
-	APPLICATIONPATH Path = "./config/application/"
+	DATAPATH        Path = "/home/haoxuanxu/MATradingBot/db/data/"
+	LOGPATH         Path = "/home/haoxuanxu/MATradingBot/logs/"
+	MONITORPATH     Path = "/home/haoxuanxu/MATradingBot/"
+	APPLICATIONPATH Path = "/home/haoxuanxu/MATradingBot/config/application/"
 )
 
 func MapDataFilePath(side, symbol string) string {
@@ -16,5 +16,5 @@ func MapDataFilePath(side, symbol string) string {
 }
 
 func MapYAMLConfigPath(fileName string) string {
-	return fileName
+	return fmt.Sprintf("%s%s", APPLICATIONPATH, fileName)
 }
