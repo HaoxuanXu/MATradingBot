@@ -51,10 +51,8 @@ func pSarPrevDirection(pSars []float64, pBars []marketdata.Bar, currDirection st
 func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] && // the current price is above the 200 period EMA value
-		model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1] < model.Signal.Bars[len(model.Signal.Bars)-1].Low &&
-		// pSarPrevDirection(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-4:], model.Signal.Bars[len(model.Signal.Bars)-4:], "below") &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
-		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] < 80 &&
+		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] < 50 &&
 		model.Signal.BollingerBandWidth[len(model.Signal.BollingerBandWidth)-1] >
 			model.Signal.BollingerBandWidthEMA[len(model.Signal.BollingerBandWidthEMA)-1] {
 		return true
@@ -66,10 +64,8 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Signal.Bars[len(model.Signal.Bars)-1].Close < model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] && // the current price is below the 200 period EMA value
-		model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1] > model.Signal.Bars[len(model.Signal.Bars)-1].High &&
-		// pSarPrevDirection(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-4:], model.Signal.Bars[len(model.Signal.Bars)-4:], "above") &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
-		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] > 20 &&
+		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] > 50 &&
 		model.Signal.BollingerBandWidth[len(model.Signal.BollingerBandWidth)-1] >
 			model.Signal.BollingerBandWidthEMA[len(model.Signal.BollingerBandWidthEMA)-1] {
 		return true
