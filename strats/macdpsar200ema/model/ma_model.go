@@ -34,6 +34,7 @@ type SignalData struct {
 	EMA200Periods []float64
 	ParabolicSars []float64
 	Bars          []marketdata.Bar
+	Quote         marketdata.Quote
 	Macds         []float64
 	MacdSignals   []float64
 }

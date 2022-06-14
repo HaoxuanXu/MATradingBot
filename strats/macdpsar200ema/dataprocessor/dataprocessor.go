@@ -9,6 +9,7 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 
 	// update the bars
 	model.Signal.Bars = data.StockBarData[model.Symbol]
+	model.Signal.Quote = data.StockQuoteData[model.Symbol]
 
 	if model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp != model.CurrentBarTimestamp {
 		// there is an update in the data, we then proceed the following processes
