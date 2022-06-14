@@ -1,8 +1,6 @@
 package signalcatcher
 
 import (
-	"math"
-
 	"github.com/HaoxuanXu/MATradingBot/internal/api"
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/marketdata"
@@ -56,8 +54,7 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1] < model.Signal.Bars[len(model.Signal.Bars)-1].Low &&
 		pSarPrevDirection(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-4:], model.Signal.Bars[len(model.Signal.Bars)-4:], "below") &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close > math.Max(model.Signal.IchimokuFastSpan[len(model.Signal.IchimokuFastSpan)-1],
-			model.Signal.IchimokuSlowSpan[len(model.Signal.IchimokuSlowSpan)-1]) {
+		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] < 20 {
 		return true
 	}
 
@@ -70,8 +67,7 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1] > model.Signal.Bars[len(model.Signal.Bars)-1].High &&
 		pSarPrevDirection(model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-4:], model.Signal.Bars[len(model.Signal.Bars)-4:], "above") &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close < math.Min(model.Signal.IchimokuFastSpan[len(model.Signal.IchimokuFastSpan)-1],
-			model.Signal.IchimokuSlowSpan[len(model.Signal.IchimokuSlowSpan)-1]) {
+		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] > 80 {
 		return true
 	}
 	return false

@@ -16,10 +16,12 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		var closeBars []float64
 		var highBars []float64
 		var lowBars []float64
+		var volumeBars []int64
 		for _, bar := range data.StockBarData[model.Symbol] {
 			closeBars = append(closeBars, bar.Close)
 			highBars = append(highBars, bar.High)
 			lowBars = append(lowBars, bar.Low)
+			volumeBars = append(volumeBars, int64(bar.Volume))
 		}
 
 		// calculate the current 200 period EMA value
@@ -34,10 +36,8 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		model.Signal.Macds = macd
 		model.Signal.MacdSignals = macdSignal
 
-		// calculate the Ichimoku Span A and Span B
-		_, _, leadingSpanA, leadingSpanB, _ := indicator.IchimokuCloud(highBars, lowBars, closeBars)
-		model.Signal.IchimokuFastSpan = leadingSpanA
-		model.Signal.IchimokuSlowSpan = leadingSpanB
+		// calculate Money Flow Index
+		model.Signal.MoneyFlowIndex = indicator.DefaultMoneyFlowIndex(highBars, lowBars, closeBars, volumeBars)
 
 		model.CurrentBarTimestamp = model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp
 		return true
