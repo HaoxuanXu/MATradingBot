@@ -16,5 +16,5 @@ func MapDataFilePath(side, symbol string) string {
 }
 
 func MapYAMLConfigPath(fileName string) string {
-	return fmt.Sprintf("%s%s", APPLICATIONPATH, fileName)
+	return fileName
 }
