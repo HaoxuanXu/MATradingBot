@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./MATradingBot -config $1
+go run main.go -config $1
