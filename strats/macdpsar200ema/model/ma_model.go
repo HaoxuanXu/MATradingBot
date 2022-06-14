@@ -19,6 +19,7 @@ func GetDataModel(symbol string) *DataModel {
 
 type DataModel struct {
 	Symbol              string
+	Shortable           bool
 	CurrentBarTimestamp time.Time
 	Signal              SignalData
 	Position            PositionData
