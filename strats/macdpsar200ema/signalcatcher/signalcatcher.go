@@ -52,6 +52,8 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] && // the current price is above the 200 period EMA value
 		model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
+		(model.Signal.Macds[len(model.Signal.Macds)-1]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1]) >
+			(model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2]) &&
 		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] < 80 &&
 		model.Signal.BollingerBandWidth[len(model.Signal.BollingerBandWidth)-1] >
 			model.Signal.BollingerBandWidthEMA[len(model.Signal.BollingerBandWidthEMA)-1] {
@@ -65,6 +67,8 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 	if !model.Position.HasLongPosition && !model.Position.HasShortPosition &&
 		model.Signal.Bars[len(model.Signal.Bars)-1].Close < model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] && // the current price is below the 200 period EMA value
 		model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
+		(model.Signal.Macds[len(model.Signal.Macds)-1]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1]) <
+			(model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2]) &&
 		model.Signal.MoneyFlowIndex[len(model.Signal.MoneyFlowIndex)-1] > 20 &&
 		model.Signal.BollingerBandWidth[len(model.Signal.BollingerBandWidth)-1] >
 			model.Signal.BollingerBandWidthEMA[len(model.Signal.BollingerBandWidthEMA)-1] {
