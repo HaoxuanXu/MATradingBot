@@ -39,6 +39,12 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		// calculate Money Flow Index
 		model.Signal.MoneyFlowIndex = indicator.DefaultMoneyFlowIndex(highBars, lowBars, closeBars, volumeBars)
 
+		// calculate bollinger band
+		middle, upper, lower := indicator.BollingerBands(closeBars)
+		width, widthEma := indicator.BollingerBandWidth(middle, upper, lower)
+		model.Signal.BollingerBandWidth = width
+		model.Signal.BollingerBandWidthEMA = widthEma
+
 		model.CurrentBarTimestamp = model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp
 		return true
 	}

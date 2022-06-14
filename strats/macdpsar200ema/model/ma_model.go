@@ -31,13 +31,15 @@ type TotalBarData struct {
 }
 
 type SignalData struct {
-	EMA200Periods  []float64
-	ParabolicSars  []float64
-	MoneyFlowIndex []float64
-	Bars           []marketdata.Bar
-	Quote          marketdata.Quote
-	Macds          []float64
-	MacdSignals    []float64
+	EMA200Periods         []float64
+	ParabolicSars         []float64
+	MoneyFlowIndex        []float64
+	BollingerBandWidth    []float64
+	BollingerBandWidthEMA []float64
+	Bars                  []marketdata.Bar
+	Quote                 marketdata.Quote
+	Macds                 []float64
+	MacdSignals           []float64
 }
 
 type PositionData struct {
