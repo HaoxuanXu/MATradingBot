@@ -138,7 +138,7 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 	return finalOrder
 }
 
-func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float64, symbol, side string) *alpaca.Order {
+func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float64, symbol, side string) (error, *alpaca.Order) {
 	defer lock.Unlock()
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
@@ -164,9 +164,10 @@ func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float
 	)
 	if err != nil {
 		log.Printf("%s: %v", symbol, err)
+		return err, nil
 	}
 	finalOrder := broker.MonitorOrder(order)
-	return finalOrder
+	return nil, finalOrder
 
 }
 

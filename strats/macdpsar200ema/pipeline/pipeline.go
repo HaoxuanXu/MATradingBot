@@ -24,7 +24,11 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 	stop_loss := currentQuote - profitOffset
 	take_profit := currentQuote + profitOffset
 	if take_profit > stop_loss {
-		order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "buy")
+		err, order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "buy")
+		if err != nil {
+			log.Printf("%s: %v\n", model.Symbol, err)
+			return
+		}
 		transaction.UpdatePositionAfterTransaction(model, order)
 		transaction.RecordEntryTransaction(model)
 	} else {
@@ -45,7 +49,11 @@ func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData,
 	stop_loss := currentQuote + profitOffset
 	take_profit := currentQuote - profitOffset
 	if take_profit < stop_loss {
-		order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
+		err, order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
+		if err != nil {
+			log.Printf("%s: %v\n", model.Symbol, err)
+			return
+		}
 		transaction.UpdatePositionAfterTransaction(model, order)
 		transaction.RecordEntryTransaction(model)
 	} else {
