@@ -15,16 +15,6 @@ func RefreshPosition(model *model.DataModel, broker *api.AlpacaBroker) {
 
 func EnterTrailingStopLongPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
 	quote := model.Signal.Quote.AskPrice
-	trailingOrder, err := broker.SubmitTrailingStopOrder(
-		qty,
-		math.Abs(model.Signal.TrailingStopLossLong-quote),
-		model.Symbol,
-		"sell",
-	)
-	if err != nil {
-		log.Printf("%s (trailing order): %v\n", model.Symbol, err)
-		return
-	}
 
 	marketOrder, err := broker.SubmitMarketOrder(
 		qty,
@@ -34,7 +24,16 @@ func EnterTrailingStopLongPosition(model *model.DataModel, broker *api.AlpacaBro
 	)
 	if err != nil {
 		log.Printf("%s (market order): %v\n", model.Symbol, err)
-		broker.CancelOrder(trailingOrder.ID)
+	}
+	_, err = broker.SubmitTrailingStopOrder(
+		qty,
+		math.Abs(model.Signal.TrailingStopLossLong-quote),
+		model.Symbol,
+		"sell",
+	)
+	if err != nil {
+		log.Printf("%s (trailing order): %v\n", model.Symbol, err)
+		return
 	}
 
 	transaction.UpdatePositionAfterTransaction(model, marketOrder)
@@ -43,16 +42,6 @@ func EnterTrailingStopLongPosition(model *model.DataModel, broker *api.AlpacaBro
 
 func EnterTrailingStopShortPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
 	quote := model.Signal.Quote.BidPrice
-	trailingOrder, err := broker.SubmitTrailingStopOrder(
-		qty,
-		math.Abs(model.Signal.TrailingStopLossLong-quote),
-		model.Symbol,
-		"buy",
-	)
-	if err != nil {
-		log.Printf("%s (trailing order): %v\n", model.Symbol, err)
-		return
-	}
 
 	marketOrder, err := broker.SubmitMarketOrder(
 		qty,
@@ -62,7 +51,16 @@ func EnterTrailingStopShortPosition(model *model.DataModel, broker *api.AlpacaBr
 	)
 	if err != nil {
 		log.Printf("%s (market order): %v\n", model.Symbol, err)
-		broker.CancelOrder(trailingOrder.ID)
+	}
+	_, err = broker.SubmitTrailingStopOrder(
+		qty,
+		math.Abs(model.Signal.TrailingStopLossLong-quote),
+		model.Symbol,
+		"buy",
+	)
+	if err != nil {
+		log.Printf("%s (trailing order): %v\n", model.Symbol, err)
+		return
 	}
 
 	transaction.UpdatePositionAfterTransaction(model, marketOrder)
