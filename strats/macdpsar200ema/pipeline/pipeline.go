@@ -13,6 +13,60 @@ func RefreshPosition(model *model.DataModel, broker *api.AlpacaBroker) {
 	transaction.RetrievePositionIfExists(model, broker)
 }
 
+func EnterTrailingStopLongPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
+	trailingOrder, err := broker.SubmitTrailingStopOrder(
+		qty,
+		model.Signal.TrailingStopLossLong,
+		model.Symbol,
+		"sell",
+	)
+	if err != nil {
+		log.Printf("%s (trailing order): %v\n", model.Symbol, err)
+		return
+	}
+
+	marketOrder, err := broker.SubmitMarketOrder(
+		qty,
+		model.Symbol,
+		"buy",
+		"day",
+	)
+	if err != nil {
+		log.Printf("%s (market order): %v\n", model.Symbol, err)
+		broker.CancelOrder(trailingOrder.ID)
+	}
+
+	transaction.UpdatePositionAfterTransaction(model, marketOrder)
+	transaction.RecordEntryTransaction(model)
+}
+
+func EnterTrailingStopShortPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
+	trailingOrder, err := broker.SubmitTrailingStopOrder(
+		qty,
+		model.Signal.TrailingStopLossLong,
+		model.Symbol,
+		"buy",
+	)
+	if err != nil {
+		log.Printf("%s (trailing order): %v\n", model.Symbol, err)
+		return
+	}
+
+	marketOrder, err := broker.SubmitMarketOrder(
+		qty,
+		model.Symbol,
+		"sell",
+		"day",
+	)
+	if err != nil {
+		log.Printf("%s (market order): %v\n", model.Symbol, err)
+		broker.CancelOrder(trailingOrder.ID)
+	}
+
+	transaction.UpdatePositionAfterTransaction(model, marketOrder)
+	transaction.RecordEntryTransaction(model)
+}
+
 func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, broker *api.AlpacaBroker, qty float64) {
 	currentQuote := data.StockQuoteData[model.Symbol].AskPrice
 	profitOffset := math.Min(math.Abs(model.Signal.Bars[len(model.Signal.Bars)-1].Low-model.Signal.ParabolicSars[len(model.Signal.ParabolicSars)-1]),
@@ -24,7 +78,7 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 	stop_loss := currentQuote - profitOffset
 	take_profit := currentQuote + profitOffset
 	if take_profit > stop_loss {
-		err, order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "buy")
+		order, err := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "buy")
 		if err != nil {
 			log.Printf("%s: %v\n", model.Symbol, err)
 			return
@@ -50,7 +104,7 @@ func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData,
 	stop_loss := currentQuote + profitOffset
 	take_profit := currentQuote - profitOffset
 	if take_profit < stop_loss {
-		err, order := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
+		order, err := broker.SubmitBracketOrder(qty, take_profit, stop_loss, model.Symbol, "sell")
 		if err != nil {
 			log.Printf("%s: %v\n", model.Symbol, err)
 			return

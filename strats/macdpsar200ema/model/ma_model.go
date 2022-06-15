@@ -33,11 +33,16 @@ type TotalBarData struct {
 type SignalData struct {
 	EMA200Periods         []float64
 	ParabolicSars         []float64
-	MoneyFlowIndex        []float64
+	Chaikin               []float64
 	BollingerBandWidth    []float64
 	BollingerBandWidthEMA []float64
+	ATR                   []float64
+	ATRLowerBound         float64
+	ATRMin                float64
 	Bars                  []marketdata.Bar
 	Quote                 marketdata.Quote
+	TrailingStopLossLong  float64
+	TrailingStopLossShort float64
 	Macds                 []float64
 	MacdSignals           []float64
 }

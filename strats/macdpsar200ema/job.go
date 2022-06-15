@@ -26,9 +26,9 @@ func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent
 			qty = float64(int(entryAmount / dataModel.Signal.Quote.AskPrice))
 
 			if signalcatcher.CanEnterLong(dataModel, broker) && qty > 0 {
-				pipeline.EnterBracketLongPosition(dataModel, totalData, broker, qty)
+				pipeline.EnterTrailingStopLongPosition(dataModel, broker, qty)
 			} else if signalcatcher.CanEnterShort(dataModel, broker) && qty > 0 {
-				pipeline.EnterBracketShortPosition(dataModel, totalData, broker, qty)
+				pipeline.EnterTrailingStopShortPosition(dataModel, broker, qty)
 			}
 		}
 

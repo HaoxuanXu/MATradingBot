@@ -92,7 +92,18 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) *alpaca.Order {
 	return order
 }
 
-func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInForce string) *alpaca.Order {
+func (broker *AlpacaBroker) CancelOrder(orderID string) {
+	defer lock.Unlock()
+	lock.Lock()
+	err := broker.Client.CancelOrder(orderID)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+}
+
+func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInForce string) (*alpaca.Order, error) {
 	defer lock.Unlock()
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
@@ -108,14 +119,15 @@ func (broker *AlpacaBroker) SubmitMarketOrder(qty float64, symbol, side, timeInF
 	)
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
 
 	finalOrder := broker.MonitorOrder(order)
-	return finalOrder
+	return finalOrder, nil
 
 }
 
-func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, symbol, side string) *alpaca.Order {
+func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, symbol, side string) (*alpaca.Order, error) {
 	defer lock.Unlock()
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
@@ -133,12 +145,13 @@ func (broker *AlpacaBroker) SubmitTrailingStopOrder(qty, trail_price float64, sy
 	)
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
 	finalOrder := broker.MonitorOrder(order)
-	return finalOrder
+	return finalOrder, nil
 }
 
-func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float64, symbol, side string) (error, *alpaca.Order) {
+func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float64, symbol, side string) (*alpaca.Order, error) {
 	defer lock.Unlock()
 	lock.Lock()
 	quantity := decimal.NewFromFloat(qty)
@@ -164,24 +177,11 @@ func (broker *AlpacaBroker) SubmitBracketOrder(qty, take_profit, take_loss float
 	)
 	if err != nil {
 		log.Printf("%s: %v", symbol, err)
-		return err, nil
+		return nil, err
 	}
 	finalOrder := broker.MonitorOrder(order)
-	return nil, finalOrder
+	return finalOrder, err
 
-}
-
-func (broker *AlpacaBroker) ChangeOrderTrail(order *alpaca.Order, newTrail float64) *alpaca.Order {
-	ordeID := order.ID
-	newTrailDecimal := decimal.NewFromFloat(newTrail)
-	order, _ = broker.Client.ReplaceOrder(
-		ordeID,
-		alpaca.ReplaceOrderRequest{
-			Trail: &newTrailDecimal,
-		},
-	)
-	finalOrder := broker.MonitorOrder(order)
-	return finalOrder
 }
 
 func (broker *AlpacaBroker) RetrieveOrderIfExists(symbol, status, orderType string) (*alpaca.Order, error) {

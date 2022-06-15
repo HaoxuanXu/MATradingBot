@@ -3,6 +3,7 @@ package dataprocessor
 import (
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
 	"github.com/cinar/indicator"
+	"github.com/montanaflynn/stats"
 )
 
 func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
@@ -36,14 +37,27 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		model.Signal.Macds = macd
 		model.Signal.MacdSignals = macdSignal
 
-		// calculate Money Flow Index
-		model.Signal.MoneyFlowIndex = indicator.DefaultMoneyFlowIndex(highBars, lowBars, closeBars, volumeBars)
+		// calculate chaikin money flow
+		model.Signal.Chaikin = indicator.ChaikinMoneyFlow(highBars, lowBars, closeBars, volumeBars)
 
 		// calculate bollinger band
 		middle, upper, lower := indicator.BollingerBands(closeBars)
 		width, widthEma := indicator.BollingerBandWidth(middle, upper, lower)
 		model.Signal.BollingerBandWidth = width
 		model.Signal.BollingerBandWidthEMA = widthEma
+
+		// calculate ATR
+		tr, _ := indicator.Atr(14, highBars, lowBars, closeBars)
+		model.Signal.ATR = tr[len(model.Signal.ATR)-14:]
+		trLower, _ := stats.Percentile(tr, 20)
+		trMin, _ := stats.Min(tr)
+		model.Signal.ATRLowerBound = trLower
+		model.Signal.ATRMin = trMin
+
+		// calculate trailing stop loss
+		exitLong, exitShort := indicator.ChandelierExit(highBars, lowBars, closeBars)
+		model.Signal.TrailingStopLossLong = exitLong[len(exitLong)-1]
+		model.Signal.TrailingStopLossShort = exitShort[len(exitShort)-1]
 
 		model.CurrentBarTimestamp = model.Signal.Bars[len(model.Signal.Bars)-1].Timestamp
 		return true
