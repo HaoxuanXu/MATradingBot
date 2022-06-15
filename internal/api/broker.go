@@ -12,10 +12,12 @@ import (
 )
 
 type AlpacaBroker struct {
-	Client  alpaca.Client
-	Account *alpaca.Account
-	Clock   *alpaca.Clock
-	Cash    float64
+	Client           alpaca.Client
+	Account          *alpaca.Account
+	Clock            *alpaca.Clock
+	Cash             float64
+	HasLongPosition  bool
+	HasShortPosition bool
 }
 
 var lock sync.Mutex

@@ -27,7 +27,8 @@ func main() {
 	serverType := fmt.Sprintf("%s", yamlConfig["servertype"])
 	entryPercent, _ := strconv.ParseFloat(fmt.Sprintf("%v", yamlConfig["entrypercent"]), 64)
 
-	var totalData model.TotalBarData
+	var fastTotalData model.TotalBarData
+	var slowTotalData model.TotalBarData
 	stocks := config.Stocks
 
 	workerEntryPercent := entryPercent / float64(len(stocks))
@@ -51,7 +52,7 @@ func main() {
 	// start workers
 	for _, stock := range stocks {
 		log.Printf("Starting worker for %s trading\n", stock)
-		go macdpsar200ema.MACDPSar200EMAStrategy(stock, accountType, serverType, workerEntryPercent, &totalData, stockChanMap.Map[stock])
+		go macdpsar200ema.MACDPSar200EMAStrategy(stock, accountType, serverType, workerEntryPercent, &fastTotalData, &slowTotalData, stockChanMap.Map[stock])
 	}
 
 	// start main loop
@@ -59,12 +60,18 @@ func main() {
 	log.Println("Start main loop...")
 	for time.Until(clock.NextClose) > 0 {
 
-		barData := dataEngine.GetMultiBars(1, stocks)
-		if len(barData) > 0 {
-			totalData.StockBarData = barData
+		fastBarData := dataEngine.GetMultiBars(1, stocks)
+		if len(fastBarData) > 0 {
+			fastTotalData.StockBarData = fastBarData
+		}
+		slowBarData := dataEngine.GetMultiBars(5, stocks)
+		if len(slowBarData) > 0 {
+			slowTotalData.StockBarData = slowBarData
 		}
 
-		totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
+		quoteData := dataEngine.GetLatestMultiQuotes(stocks)
+		slowTotalData.StockQuoteData = quoteData
+		fastTotalData.StockQuoteData = quoteData
 		stockChanMap.TriggerWorkers()
 		time.Sleep(time.Second)
 	}

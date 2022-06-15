@@ -25,16 +25,16 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 	position, _ := broker.GetPosition(model.Symbol)
 
 	if position == nil {
-		model.Position.HasLongPosition = false
-		model.Position.HasShortPosition = false
+		broker.HasLongPosition = false
+		broker.HasShortPosition = false
 		model.Position.HasOrder = false
 	} else {
 		if position.Side == "sell" {
-			model.Position.HasShortPosition = true
-			model.Position.HasLongPosition = false
+			broker.HasShortPosition = true
+			broker.HasLongPosition = false
 		} else {
-			model.Position.HasShortPosition = false
-			model.Position.HasLongPosition = true
+			broker.HasShortPosition = false
+			broker.HasLongPosition = true
 		}
 		marketOrder, err := broker.RetrieveOrderIfExists(model.Symbol, "filled", "market")
 		if err != nil {
@@ -52,10 +52,10 @@ func RetrievePositionIfExists(model *model.DataModel, broker *api.AlpacaBroker) 
 	}
 }
 
-func RecordEntryTransaction(model *model.DataModel) {
-	if model.Position.HasLongPosition && !model.Position.HasShortPosition {
+func RecordEntryTransaction(model *model.DataModel, broker *api.AlpacaBroker) {
+	if broker.HasLongPosition && !broker.HasShortPosition {
 		log.Printf("symbol: %s, side: %s, qty: %.2f\n", model.Symbol, "buy", model.Position.FilledQuantity)
-	} else if model.Position.HasShortPosition && !model.Position.HasLongPosition {
+	} else if broker.HasShortPosition && !broker.HasLongPosition {
 		log.Printf("symbol: %s, side: %s, qty: %.2f\n", model.Symbol, "sell", model.Position.FilledQuantity)
 	}
 }
