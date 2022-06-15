@@ -8,10 +8,11 @@ import (
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/pipeline"
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/signalcatcher"
+	"github.com/HaoxuanXu/MATradingBot/util"
 )
 
 func MACDPSar200EMAStrategy(symbol, accountType, serverType string, entryPercent float64, totalData *model.TotalBarData, channel chan bool) {
-	// defer util.HandlePanic(symbol)
+	defer util.HandlePanic(symbol)
 	broker := api.GetBroker(accountType, serverType)
 	dataModel := model.GetDataModel(symbol)
 	entryAmount := broker.Cash * entryPercent
