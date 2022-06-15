@@ -1,6 +1,8 @@
 package dataprocessor
 
 import (
+	"log"
+
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
 	"github.com/cinar/indicator"
 	"github.com/montanaflynn/stats"
@@ -48,6 +50,7 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 
 		// calculate ATR
 		tr, _ := indicator.Atr(14, highBars, lowBars, closeBars)
+		log.Printf("%s, length: %d\n", model.Symbol, len(tr))
 		model.Signal.ATR = tr[len(model.Signal.ATR)-14:]
 		trLower, _ := stats.Percentile(tr, 20)
 		trMin, _ := stats.Min(tr)
