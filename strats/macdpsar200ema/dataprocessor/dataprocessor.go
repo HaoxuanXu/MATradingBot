@@ -59,10 +59,10 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		model.Signal.StochK = k
 		model.Signal.StochD = d
 		// determine overbought oversold
-		if model.Signal.StochK[len(model.Signal.StochK)-1] < 20 && model.Signal.StochD[len(model.Signal.StochD)-1] < 20 {
+		if model.Signal.StochK[len(model.Signal.StochK)-1] < 25 && model.Signal.StochD[len(model.Signal.StochD)-1] < 25 {
 			model.Signal.StochOversold = true
 			model.Signal.StockOverbought = false
-		} else if model.Signal.StochK[len(model.Signal.StochK)-1] > 80 && model.Signal.StochD[len(model.Signal.StochD)-1] > 80 {
+		} else if model.Signal.StochK[len(model.Signal.StochK)-1] > 75 && model.Signal.StochD[len(model.Signal.StochD)-1] > 75 {
 			model.Signal.StochOversold = false
 			model.Signal.StockOverbought = true
 		}
