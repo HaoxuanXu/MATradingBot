@@ -39,6 +39,11 @@ type SignalData struct {
 	ATR                   []float64
 	ATRLowerBound         float64
 	ATRMin                float64
+	StochK                []float64
+	StochD                []float64
+	StochOversold         bool
+	StockOverbought       bool
+	RSI                   []float64
 	Bars                  []marketdata.Bar
 	Quote                 marketdata.Quote
 	TrailingStopLossLong  float64

@@ -12,12 +12,9 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] < 0 &&
 		model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] < 0 &&
-		// model.Signal.ATR[len(model.Signal.ATR)-1] <= model.Signal.ATRLowerBound &&
-		// model.Signal.ATR[len(model.Signal.ATR)-1] >= model.Signal.ATRMin &&
-		// model.Signal.ATR[len(model.Signal.ATR)-1] > model.Signal.ATR[len(model.Signal.ATR)-2] &&
-		model.Signal.Chaikin[len(model.Signal.Chaikin)-1] > 0 &&
-		model.Signal.BollingerBandWidth[len(model.Signal.BollingerBandWidth)-1] >
-			model.Signal.BollingerBandWidthEMA[len(model.Signal.BollingerBandWidthEMA)-1] {
+		model.Signal.StochOversold &&
+		!model.Signal.StockOverbought &&
+		model.Signal.RSI[len(model.Signal.RSI)-1] > 50 {
 		return true
 	}
 
@@ -30,12 +27,9 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] > 0 &&
 		model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] > 0 &&
-		// model.Signal.ATR[len(model.Signal.ATR)-1] <= model.Signal.ATRLowerBound &&
-		// model.Signal.ATR[len(model.Signal.ATR)-1] >= model.Signal.ATRMin &&
-		// model.Signal.ATR[len(model.Signal.ATR)-1] > model.Signal.ATR[len(model.Signal.ATR)-2] &&
-		model.Signal.Chaikin[len(model.Signal.Chaikin)-1] < 0 &&
-		model.Signal.BollingerBandWidth[len(model.Signal.BollingerBandWidth)-1] >
-			model.Signal.BollingerBandWidthEMA[len(model.Signal.BollingerBandWidthEMA)-1] {
+		!model.Signal.StochOversold &&
+		model.Signal.StockOverbought &&
+		model.Signal.RSI[len(model.Signal.RSI)-1] < 50 {
 		return true
 	}
 	return false

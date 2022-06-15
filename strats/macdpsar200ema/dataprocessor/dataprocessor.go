@@ -54,6 +54,23 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		model.Signal.ATRLowerBound = trLower
 		model.Signal.ATRMin = trMin
 
+		// calculate stochastic
+		k, d := indicator.StochasticOscillator(highBars, lowBars, closeBars)
+		model.Signal.StochK = k
+		model.Signal.StochD = d
+		// determine overbought oversold
+		if model.Signal.StochK[len(model.Signal.StochK)-1] < 20 && model.Signal.StochD[len(model.Signal.StochD)-1] < 20 {
+			model.Signal.StochOversold = true
+			model.Signal.StockOverbought = false
+		} else if model.Signal.StochK[len(model.Signal.StochK)-1] > 80 && model.Signal.StochD[len(model.Signal.StochD)-1] > 80 {
+			model.Signal.StochOversold = false
+			model.Signal.StockOverbought = true
+		}
+
+		// calculate RSI
+		_, rsi := indicator.Rsi(closeBars)
+		model.Signal.RSI = rsi
+
 		// calculate trailing stop loss
 		exitLong, exitShort := indicator.ChandelierExit(highBars, lowBars, closeBars)
 		model.Signal.TrailingStopLossLong = exitLong[len(exitLong)-1]
