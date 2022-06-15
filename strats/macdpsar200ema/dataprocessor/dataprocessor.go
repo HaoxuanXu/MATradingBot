@@ -61,10 +61,10 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		// determine overbought oversold
 		if model.Signal.StochK[len(model.Signal.StochK)-1] < 25 && model.Signal.StochD[len(model.Signal.StochD)-1] < 25 {
 			model.Signal.StochOversold = true
-			model.Signal.StockOverbought = false
+			model.Signal.StochOverbought = false
 		} else if model.Signal.StochK[len(model.Signal.StochK)-1] > 75 && model.Signal.StochD[len(model.Signal.StochD)-1] > 75 {
 			model.Signal.StochOversold = false
-			model.Signal.StockOverbought = true
+			model.Signal.StochOverbought = true
 		}
 
 		// calculate RSI

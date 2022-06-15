@@ -12,8 +12,8 @@ func CanEnterLong(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] < 0 && model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] < 0 &&
 		model.Signal.StochOversold &&
-		!model.Signal.StockOverbought &&
-		model.Signal.RSI[len(model.Signal.RSI)-1] > 50 {
+		!model.Signal.StochOverbought &&
+		model.Signal.RSI[len(model.Signal.RSI)-1] > 60 {
 		return true
 	}
 
@@ -26,8 +26,8 @@ func CanEnterShort(model *model.DataModel, broker *api.AlpacaBroker) bool {
 		model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.Macds[len(model.Signal.Macds)-1] > 0 && model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] > 0 &&
 		!model.Signal.StochOversold &&
-		model.Signal.StockOverbought &&
-		model.Signal.RSI[len(model.Signal.RSI)-1] < 50 {
+		model.Signal.StochOverbought &&
+		model.Signal.RSI[len(model.Signal.RSI)-1] < 40 {
 		return true
 	}
 	return false

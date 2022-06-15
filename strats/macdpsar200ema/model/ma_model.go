@@ -42,7 +42,7 @@ type SignalData struct {
 	StochK                []float64
 	StochD                []float64
 	StochOversold         bool
-	StockOverbought       bool
+	StochOverbought       bool
 	RSI                   []float64
 	Bars                  []marketdata.Bar
 	Quote                 marketdata.Quote
