@@ -59,14 +59,14 @@ func main() {
 	log.Println("Start main loop...")
 	for time.Until(clock.NextClose) > 0 {
 
-		barData := dataEngine.GetMultiBars(5, stocks)
+		barData := dataEngine.GetMultiBars(1, stocks)
 		if len(barData) > 0 {
 			totalData.StockBarData = barData
 		}
 
 		totalData.StockQuoteData = dataEngine.GetLatestMultiQuotes(stocks)
 		stockChanMap.TriggerWorkers()
-		time.Sleep(10 * time.Second)
+		time.Sleep(time.Second)
 	}
 
 	stockChanMap.CloseWorkers()
