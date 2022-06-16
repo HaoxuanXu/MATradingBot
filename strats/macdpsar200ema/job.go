@@ -49,13 +49,13 @@ func MACDPSar200EMAStrategy(
 		}
 
 		// record slow time frame fast time frame alignment
-		if signalcatcher.CanEnterLong(fastDataModel) == signalcatcher.CanEnterLong(slowDataModel) {
+		if signalcatcher.CanEnterLong(slowDataModel) && signalcatcher.CanEnterLong(fastDataModel) {
 			prevTimeFrameDirectionAlignedLong = true
 		} else {
 			prevTimeFrameDirectionAlignedLong = false
 		}
 
-		if signalcatcher.CanEnterShort(fastDataModel) == signalcatcher.CanEnterShort(slowDataModel) {
+		if signalcatcher.CanEnterShort(fastDataModel) && signalcatcher.CanEnterShort(slowDataModel) {
 			prevTimeFrameDirectionAlignedShort = true
 		} else {
 			prevTimeFrameDirectionAlignedShort = false
