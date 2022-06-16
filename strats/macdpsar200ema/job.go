@@ -29,7 +29,7 @@ func MACDPSar200EMAStrategy(
 	var qty float64
 
 	for <-channel {
-
+		log.Printf("%s: working\n", fastDataModel.Symbol)
 		pipeline.RefreshPosition(fastDataModel, broker)
 		if dataprocessor.ProcessBarData(fastDataModel, fastTotalData) {
 			dataprocessor.ProcessBarData(slowDataModel, slowTotalData)
