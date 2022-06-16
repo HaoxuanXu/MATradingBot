@@ -15,7 +15,7 @@ func RefreshPosition(model *model.DataModel, broker *api.AlpacaBroker) {
 
 func EnterTrailingStopLongPosition(model *model.DataModel, broker *api.AlpacaBroker, qty float64) {
 	quote := model.Signal.Quote.AskPrice
-	trail := math.Max(quote*0.001, math.Abs(model.Signal.TrailingStopLossLong-quote)/2)
+	trail := math.Max(quote*0.001, math.Abs(model.Signal.TrailingStopLossLong-quote))
 	marketOrder, err := broker.SubmitMarketOrder(
 		qty,
 		model.Symbol,
