@@ -8,7 +8,6 @@ import (
 func CanEnterLongFastPeriod(model *model.DataModel) bool {
 	if model.Signal.Macds[len(model.Signal.Macds)-1]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] >
 		model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
-		!model.Signal.StochOverbought && model.Signal.StochOversold &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] > model.Signal.StochD[len(model.Signal.StochD)-1] {
 		return true
 	}
@@ -18,8 +17,9 @@ func CanEnterLongFastPeriod(model *model.DataModel) bool {
 
 func CanEnterLongSlowPeriod(model *model.DataModel) bool {
 	if model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
+		model.Signal.Macds[len(model.Signal.Macds)-1] < 0 && model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] < 0 &&
 		!model.Signal.StochOverbought && model.Signal.StochOversold &&
-		model.Signal.StochK[len(model.Signal.StochK)-1] > model.Signal.StochD[len(model.Signal.StochD)-1] {
+		model.Signal.RSI[len(model.Signal.RSI)-1] > 50 {
 		return true
 	}
 
@@ -29,7 +29,6 @@ func CanEnterLongSlowPeriod(model *model.DataModel) bool {
 func CanEnterShortFastPeriod(model *model.DataModel) bool {
 	if model.Signal.Macds[len(model.Signal.Macds)-1]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] <
 		model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
-		!model.Signal.StochOversold && model.Signal.StochOverbought &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] < model.Signal.StochD[len(model.Signal.StochD)-1] {
 		return true
 	}
@@ -38,8 +37,9 @@ func CanEnterShortFastPeriod(model *model.DataModel) bool {
 
 func CanEnterShortSlowPeriod(model *model.DataModel) bool {
 	if model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
+		model.Signal.Macds[len(model.Signal.Macds)-1] > 0 && model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] > 0 &&
 		!model.Signal.StochOversold && model.Signal.StochOverbought &&
-		model.Signal.StochK[len(model.Signal.StochK)-1] < model.Signal.StochD[len(model.Signal.StochD)-1] {
+		model.Signal.RSI[len(model.Signal.RSI)-1] < 50 {
 		return true
 	}
 	return false
