@@ -3,7 +3,6 @@ package dataprocessor
 import (
 	"github.com/HaoxuanXu/MATradingBot/strats/macdpsar200ema/model"
 	"github.com/cinar/indicator"
-	"github.com/montanaflynn/stats"
 )
 
 func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
@@ -37,22 +36,21 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		model.Signal.Macds = macd
 		model.Signal.MacdSignals = macdSignal
 
-		// calculate chaikin money flow
-		model.Signal.Chaikin = indicator.ChaikinMoneyFlow(highBars, lowBars, closeBars, volumeBars)
+		// calculate BXTrender
+		Ema5DaysClose := indicator.Ema(5, closeBars)
+		Ema20DaysClose := indicator.Ema(20, closeBars)
+		Ema20DaysClose = Ema20DaysClose[len(Ema5DaysClose)-len(Ema20DaysClose):]
+		var priceDiff []float64
 
-		// calculate bollinger band
-		middle, upper, lower := indicator.BollingerBands(closeBars)
-		width, widthEma := indicator.BollingerBandWidth(middle, upper, lower)
-		model.Signal.BollingerBandWidth = width
-		model.Signal.BollingerBandWidthEMA = widthEma
+		for i := 0; i < len(Ema5DaysClose); i++ {
+			priceDiff = append(priceDiff, Ema5DaysClose[i]-Ema20DaysClose[i])
+		}
 
-		// calculate ATR
-		tr, _ := indicator.Atr(14, highBars, lowBars, closeBars)
-		model.Signal.ATR = tr[len(tr)-14:]
-		trLower, _ := stats.Percentile(tr, 20)
-		trMin, _ := stats.Min(tr)
-		model.Signal.ATRLowerBound = trLower
-		model.Signal.ATRMin = trMin
+		_, bxTrenderShortTerm := indicator.Rsi(Ema20DaysClose)
+		model.Signal.BXTrenderShortTerm = bxTrenderShortTerm
+
+		_, bxtrenderLongTerm := indicator.Rsi(priceDiff)
+		model.Signal.BXTrenderLongTerm = bxtrenderLongTerm
 
 		// calculate stochastic
 		k, d := indicator.StochasticOscillator(highBars, lowBars, closeBars)

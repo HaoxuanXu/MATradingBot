@@ -33,17 +33,13 @@ type TotalBarData struct {
 type SignalData struct {
 	EMA200Periods         []float64
 	ParabolicSars         []float64
-	Chaikin               []float64
-	BollingerBandWidth    []float64
-	BollingerBandWidthEMA []float64
-	ATR                   []float64
-	ATRLowerBound         float64
-	ATRMin                float64
 	StochK                []float64
 	StochD                []float64
 	StochOversold         bool
 	StochOverbought       bool
 	RSI                   []float64
+	BXTrenderLongTerm     []float64
+	BXTrenderShortTerm    []float64
 	Bars                  []marketdata.Bar
 	Quote                 marketdata.Quote
 	TrailingStopLossLong  float64
