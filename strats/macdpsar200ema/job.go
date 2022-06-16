@@ -23,8 +23,8 @@ func MACDPSar200EMAStrategy(
 	slowDataModel := model.GetDataModel(symbol)
 	entryAmount := broker.Cash * entryPercent
 
-	// var prevTimeFrameDirectionAlignedLong bool
-	// var prevTimeFrameDirectionAlignedShort bool
+	var prevTimeFrameDirectionAlignedLong bool
+	var prevTimeFrameDirectionAlignedShort bool
 
 	var qty float64
 
@@ -38,27 +38,28 @@ func MACDPSar200EMAStrategy(
 			if signalcatcher.CanEnterLongFastPeriod(fastDataModel) &&
 				signalcatcher.CanEnterLongSlowPeriod(slowDataModel) &&
 				!broker.HasLongPosition && !broker.HasShortPosition &&
-				qty > 0 {
+				qty > 0 && !prevTimeFrameDirectionAlignedLong {
 				pipeline.EnterTrailingStopLongPosition(fastDataModel, broker, qty)
 			} else if signalcatcher.CanEnterShortFastPeriod(fastDataModel) &&
 				signalcatcher.CanEnterShortSlowPeriod(slowDataModel) &&
-				!broker.HasLongPosition && !broker.HasShortPosition && qty > 0 {
+				!broker.HasLongPosition && !broker.HasShortPosition && qty > 0 &&
+				!prevTimeFrameDirectionAlignedShort {
 				pipeline.EnterTrailingStopShortPosition(fastDataModel, broker, qty)
 			}
 		}
 
 		// record slow time frame fast time frame alignment
-		// if signalcatcher.CanEnterLongSlowPeriod(slowDataModel) && signalcatcher.CanEnterLongFastPeriod(fastDataModel) {
-		// 	prevTimeFrameDirectionAlignedLong = true
-		// } else {
-		// 	prevTimeFrameDirectionAlignedLong = false
-		// }
+		if signalcatcher.CanEnterLongSlowPeriod(slowDataModel) && signalcatcher.CanEnterLongFastPeriod(fastDataModel) {
+			prevTimeFrameDirectionAlignedLong = true
+		} else {
+			prevTimeFrameDirectionAlignedLong = false
+		}
 
-		// if signalcatcher.CanEnterShortSlowPeriod(fastDataModel) && signalcatcher.CanEnterShortFastPeriod(slowDataModel) {
-		// 	prevTimeFrameDirectionAlignedShort = true
-		// } else {
-		// 	prevTimeFrameDirectionAlignedShort = false
-		// }
+		if signalcatcher.CanEnterShortSlowPeriod(fastDataModel) && signalcatcher.CanEnterShortFastPeriod(slowDataModel) {
+			prevTimeFrameDirectionAlignedShort = true
+		} else {
+			prevTimeFrameDirectionAlignedShort = false
+		}
 
 	}
 	log.Printf("%s worker closed", symbol)
