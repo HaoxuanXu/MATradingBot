@@ -23,6 +23,9 @@ func MACDPSar200EMAStrategy(
 	slowDataModel := model.GetDataModel(symbol)
 	entryAmount := broker.Cash * entryPercent
 
+	var prevTimeFrameDirectionAlignedLong bool
+	var prevTimeFrameDirectionAlignedShort bool
+
 	var qty float64
 
 	for <-channel {
@@ -32,14 +35,30 @@ func MACDPSar200EMAStrategy(
 			dataprocessor.ProcessBarData(slowDataModel, slowTotalData)
 			qty = float64(int(entryAmount / fastDataModel.Signal.Quote.AskPrice))
 
-			if signalcatcher.CanEnterLong(fastDataModel, broker) &&
-				signalcatcher.CanEnterLong(slowDataModel, broker) &&
-				qty > 0 {
+			if signalcatcher.CanEnterLong(fastDataModel) &&
+				signalcatcher.CanEnterLong(slowDataModel) &&
+				!broker.HasLongPosition && !broker.HasShortPosition &&
+				qty > 0 && !prevTimeFrameDirectionAlignedLong {
 				pipeline.EnterTrailingStopLongPosition(fastDataModel, broker, qty)
-			} else if signalcatcher.CanEnterShort(fastDataModel, broker) &&
-				signalcatcher.CanEnterShort(slowDataModel, broker) && qty > 0 {
+			} else if signalcatcher.CanEnterShort(fastDataModel) &&
+				signalcatcher.CanEnterShort(slowDataModel) &&
+				!broker.HasLongPosition && !broker.HasShortPosition && qty > 0 &&
+				!prevTimeFrameDirectionAlignedShort {
 				pipeline.EnterTrailingStopShortPosition(fastDataModel, broker, qty)
 			}
+		}
+
+		// record slow time frame fast time frame alignment
+		if signalcatcher.CanEnterLong(fastDataModel) == signalcatcher.CanEnterLong(slowDataModel) {
+			prevTimeFrameDirectionAlignedLong = true
+		} else {
+			prevTimeFrameDirectionAlignedLong = false
+		}
+
+		if signalcatcher.CanEnterShort(fastDataModel) == signalcatcher.CanEnterShort(slowDataModel) {
+			prevTimeFrameDirectionAlignedShort = true
+		} else {
+			prevTimeFrameDirectionAlignedShort = false
 		}
 
 	}
