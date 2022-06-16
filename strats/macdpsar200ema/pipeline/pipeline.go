@@ -36,7 +36,7 @@ func EnterTrailingStopLongPosition(model *model.DataModel, broker *api.AlpacaBro
 		return
 	}
 
-	transaction.UpdatePositionAfterTransaction(model, marketOrder)
+	transaction.UpdatePositionAfterTransaction(model, marketOrder, broker)
 	transaction.RecordEntryTransaction(model, broker)
 }
 
@@ -63,7 +63,7 @@ func EnterTrailingStopShortPosition(model *model.DataModel, broker *api.AlpacaBr
 		return
 	}
 
-	transaction.UpdatePositionAfterTransaction(model, marketOrder)
+	transaction.UpdatePositionAfterTransaction(model, marketOrder, broker)
 	transaction.RecordEntryTransaction(model, broker)
 }
 
@@ -83,7 +83,7 @@ func EnterBracketLongPosition(model *model.DataModel, data *model.TotalBarData, 
 			log.Printf("%s: %v\n", model.Symbol, err)
 			return
 		}
-		transaction.UpdatePositionAfterTransaction(model, order)
+		transaction.UpdatePositionAfterTransaction(model, order, broker)
 		transaction.RecordEntryTransaction(model, broker)
 	} else {
 		log.Printf("long %s: take profit only $%.2f while stop loss is $%.2f; take profit smaller than stop loss\n",
@@ -109,7 +109,7 @@ func EnterBracketShortPosition(model *model.DataModel, data *model.TotalBarData,
 			log.Printf("%s: %v\n", model.Symbol, err)
 			return
 		}
-		transaction.UpdatePositionAfterTransaction(model, order)
+		transaction.UpdatePositionAfterTransaction(model, order, broker)
 		transaction.RecordEntryTransaction(model, broker)
 	} else {
 		log.Printf("short %s: take profit only $%.2f while stop loss is $%.2f; take profit larger than stop loss\n",

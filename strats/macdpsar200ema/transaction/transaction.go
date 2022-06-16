@@ -8,16 +8,16 @@ import (
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
-func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order) {
+func UpdatePositionAfterTransaction(model *model.DataModel, order *alpaca.Order, broker *api.AlpacaBroker) {
 	model.Position.Order = *order
 	model.Position.FilledQuantity = order.FilledQty.Abs().InexactFloat64()
 	model.Position.FilledPrice = order.FilledAvgPrice.InexactFloat64()
 	if order.Side == alpaca.Sell {
-		model.Position.HasShortPosition = true
-		model.Position.HasLongPosition = false
+		broker.HasShortPosition = true
+		broker.HasLongPosition = false
 	} else {
-		model.Position.HasLongPosition = true
-		model.Position.HasShortPosition = false
+		broker.HasLongPosition = true
+		broker.HasShortPosition = false
 	}
 }
 

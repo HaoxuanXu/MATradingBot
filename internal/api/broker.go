@@ -24,10 +24,10 @@ var lock sync.Mutex
 
 func GetBroker(accountType, serverType string) *AlpacaBroker {
 
-	generatedBroker := &AlpacaBroker{}
+	generatedBroker := AlpacaBroker{}
 	generatedBroker.initialize(accountType, serverType)
 
-	return generatedBroker
+	return &generatedBroker
 }
 
 func (broker *AlpacaBroker) initialize(accountType, serverType string) {
