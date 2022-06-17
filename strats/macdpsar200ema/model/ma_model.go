@@ -46,6 +46,10 @@ type SignalData struct {
 	TrailingStopLossShort float64
 	Macds                 []float64
 	MacdSignals           []float64
+	FibonacciLow          []float64
+	FibonacciHigh         []float64
+	SwingLow              []float64
+	SwingHigh             []float64
 }
 
 type PositionData struct {

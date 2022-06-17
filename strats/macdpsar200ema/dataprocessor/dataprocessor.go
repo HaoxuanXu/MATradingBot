@@ -52,6 +52,20 @@ func ProcessBarData(model *model.DataModel, data *model.TotalBarData) bool {
 		_, bxtrenderLongTerm := indicator.Rsi(priceDiff)
 		model.Signal.BXTrenderLongTerm = bxtrenderLongTerm
 
+		// calculate swing low swing high
+		swingLow := indicator.Min(13, closeBars)
+		swingHigh := indicator.Max(13, closeBars)
+		model.Signal.SwingLow = swingLow
+		model.Signal.SwingHigh = swingHigh
+		var fibonacciLow []float64
+		var fibonacciHigh []float64
+		for i := 0; i < len(swingLow); i++ {
+			fibonacciLow = append(fibonacciLow, swingLow[i]+(swingHigh[i]-swingLow[i])*0.382)
+			fibonacciHigh = append(fibonacciHigh, swingHigh[i]-(swingHigh[i]-swingLow[i])*0.382)
+		}
+		model.Signal.FibonacciLow = fibonacciLow
+		model.Signal.FibonacciHigh = fibonacciHigh
+
 		// calculate stochastic
 		k, d := indicator.StochasticOscillator(highBars, lowBars, closeBars)
 		model.Signal.StochK = k
