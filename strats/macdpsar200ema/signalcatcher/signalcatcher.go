@@ -11,7 +11,7 @@ func CanEnterLongFastPeriod(model *model.DataModel) bool {
 			model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] > model.Signal.StochD[len(model.Signal.StochD)-1] &&
 		!model.Signal.StochOverbought && model.Signal.StochOversold &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.Bars[len(model.Signal.Bars)-2].Close {
+		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] {
 		return true
 	}
 
@@ -24,7 +24,7 @@ func CanEnterLongSlowPeriod(model *model.DataModel) bool {
 			model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] > model.Signal.StochD[len(model.Signal.StochD)-1] &&
 		!model.Signal.StochOverbought && model.Signal.StochOversold &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.FibonacciHigh[len(model.Signal.FibonacciHigh)-1] {
+		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] {
 		return true
 	}
 
@@ -37,7 +37,7 @@ func CanEnterShortFastPeriod(model *model.DataModel) bool {
 			model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] < model.Signal.StochD[len(model.Signal.StochD)-1] &&
 		!model.Signal.StochOversold && model.Signal.StochOverbought &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close < model.Signal.FibonacciLow[len(model.Signal.FibonacciLow)-1] {
+		model.Signal.Bars[len(model.Signal.Bars)-1].Close < model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] {
 		return true
 	}
 	return false
@@ -49,7 +49,7 @@ func CanEnterShortSlowPeriod(model *model.DataModel) bool {
 			model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] < model.Signal.StochD[len(model.Signal.StochD)-1] &&
 		!model.Signal.StochOversold && model.Signal.StochOverbought &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close < model.Signal.FibonacciLow[len(model.Signal.FibonacciLow)-1] {
+		model.Signal.Bars[len(model.Signal.Bars)-1].Close < model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] {
 		return true
 	}
 	return false
