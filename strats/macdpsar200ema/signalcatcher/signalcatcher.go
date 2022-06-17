@@ -19,8 +19,7 @@ func CanEnterLongFastPeriod(model *model.DataModel) bool {
 func CanEnterLongSlowPeriod(model *model.DataModel) bool {
 	if model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] > model.Signal.StochD[len(model.Signal.StochD)-1] &&
-		!model.Signal.StochOverbought && model.Signal.StochOversold &&
-		model.Signal.Bars[len(model.Signal.Bars)-1].Close > model.Signal.EMA200Periods[len(model.Signal.EMA200Periods)-1] {
+		!model.Signal.StochOverbought && model.Signal.StochOversold {
 		return true
 	}
 
