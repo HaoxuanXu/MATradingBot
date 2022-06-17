@@ -17,8 +17,7 @@ func CanEnterLongFastPeriod(model *model.DataModel) bool {
 }
 
 func CanEnterLongSlowPeriod(model *model.DataModel) bool {
-	if model.Signal.Macds[len(model.Signal.Macds)-1]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] >
-		model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
+	if model.Signal.Macds[len(model.Signal.Macds)-1] > model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] > model.Signal.StochD[len(model.Signal.StochD)-1] &&
 		!model.Signal.StochOverbought && model.Signal.StochOversold {
 		return true
@@ -38,8 +37,7 @@ func CanEnterShortFastPeriod(model *model.DataModel) bool {
 }
 
 func CanEnterShortSlowPeriod(model *model.DataModel) bool {
-	if model.Signal.Macds[len(model.Signal.Macds)-1]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] <
-		model.Signal.Macds[len(model.Signal.Macds)-2]-model.Signal.MacdSignals[len(model.Signal.MacdSignals)-2] &&
+	if model.Signal.Macds[len(model.Signal.Macds)-1] < model.Signal.MacdSignals[len(model.Signal.MacdSignals)-1] &&
 		model.Signal.StochK[len(model.Signal.StochK)-1] < model.Signal.StochD[len(model.Signal.StochD)-1] &&
 		!model.Signal.StochOversold && model.Signal.StochOverbought {
 		return true
