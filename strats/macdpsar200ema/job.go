@@ -40,12 +40,12 @@ func MACDPSar200EMAStrategy(
 				signalcatcher.CanEnterLongSlowPeriod(slowDataModel) &&
 				!broker.HasLongPosition && !broker.HasShortPosition &&
 				qty > 0 && !prevLongDecisionFast && prevLongDecisionSlow {
-				pipeline.EnterTrailingStopLongPosition(fastDataModel, broker, qty)
+				pipeline.EnterBracketLongPosition(fastDataModel, broker, qty)
 			} else if signalcatcher.CanEnterShortFastPeriod(fastDataModel) &&
 				signalcatcher.CanEnterShortSlowPeriod(slowDataModel) &&
 				!broker.HasLongPosition && !broker.HasShortPosition && qty > 0 &&
 				!prevShortDecisionFast && prevShortDecisionSlow {
-				pipeline.EnterTrailingStopShortPosition(fastDataModel, broker, qty)
+				pipeline.EnterBracketShortPosition(fastDataModel, broker, qty)
 			}
 		}
 

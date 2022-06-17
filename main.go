@@ -73,7 +73,7 @@ func main() {
 		slowTotalData.StockQuoteData = quoteData
 		fastTotalData.StockQuoteData = quoteData
 		stockChanMap.TriggerWorkers()
-		time.Sleep(time.Second)
+		time.Sleep(10 * time.Second)
 	}
 
 	stockChanMap.CloseWorkers()
