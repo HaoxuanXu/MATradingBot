@@ -23,10 +23,10 @@ func MACDPSar200EMAStrategy(
 	slowDataModel := model.GetDataModel(symbol)
 	entryAmount := broker.Cash * entryPercent
 
-	var prevLongDecisionSlow bool
-	var prevLongDecisionFast bool
-	var prevShortDecisionSlow bool
-	var prevShortDecisionFast bool
+	// var prevLongDecisionSlow bool
+	// var prevLongDecisionFast bool
+	// var prevShortDecisionSlow bool
+	// var prevShortDecisionFast bool
 
 	var qty float64
 
@@ -39,21 +39,20 @@ func MACDPSar200EMAStrategy(
 			if signalcatcher.CanEnterLongFastPeriod(fastDataModel) &&
 				signalcatcher.CanEnterLongSlowPeriod(slowDataModel) &&
 				!broker.HasLongPosition && !broker.HasShortPosition &&
-				qty > 0 && !prevLongDecisionFast && prevLongDecisionSlow {
+				qty > 0 {
 				pipeline.EnterBracketLongPosition(fastDataModel, broker, qty)
 			} else if signalcatcher.CanEnterShortFastPeriod(fastDataModel) &&
 				signalcatcher.CanEnterShortSlowPeriod(slowDataModel) &&
-				!broker.HasLongPosition && !broker.HasShortPosition && qty > 0 &&
-				!prevShortDecisionFast && prevShortDecisionSlow {
+				!broker.HasLongPosition && !broker.HasShortPosition && qty > 0 {
 				pipeline.EnterBracketShortPosition(fastDataModel, broker, qty)
 			}
 		}
 
 		// record slow time frame fast time frame alignment
-		prevLongDecisionFast = signalcatcher.CanEnterLongFastPeriod(fastDataModel)
-		prevLongDecisionSlow = signalcatcher.CanEnterLongSlowPeriod(slowDataModel)
-		prevShortDecisionFast = signalcatcher.CanEnterShortFastPeriod(fastDataModel)
-		prevShortDecisionSlow = signalcatcher.CanEnterShortSlowPeriod(slowDataModel)
+		// prevLongDecisionFast = signalcatcher.CanEnterLongFastPeriod(fastDataModel)
+		// prevLongDecisionSlow = signalcatcher.CanEnterLongSlowPeriod(slowDataModel)
+		// prevShortDecisionFast = signalcatcher.CanEnterShortFastPeriod(fastDataModel)
+		// prevShortDecisionSlow = signalcatcher.CanEnterShortSlowPeriod(slowDataModel)
 
 	}
 	log.Printf("%s worker closed", symbol)
