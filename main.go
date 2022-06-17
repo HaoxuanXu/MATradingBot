@@ -60,11 +60,11 @@ func main() {
 	log.Println("Start main loop...")
 	for time.Until(clock.NextClose) > 0 {
 
-		fastBarData := dataEngine.GetMultiBars(5, stocks)
+		fastBarData := dataEngine.GetMultiBars(1, stocks)
 		if len(fastBarData) > 0 {
 			fastTotalData.StockBarData = fastBarData
 		}
-		slowBarData := dataEngine.GetMultiBars(15, stocks)
+		slowBarData := dataEngine.GetMultiBars(5, stocks)
 		if len(slowBarData) > 0 {
 			slowTotalData.StockBarData = slowBarData
 		}
@@ -73,7 +73,7 @@ func main() {
 		slowTotalData.StockQuoteData = quoteData
 		fastTotalData.StockQuoteData = quoteData
 		stockChanMap.TriggerWorkers()
-		time.Sleep(10 * time.Second)
+		time.Sleep(time.Second)
 	}
 
 	stockChanMap.CloseWorkers()
